@@ -1,0 +1,9 @@
+{
+  "enabled": true,
+  "part": "realsense_d405_mounting_bot",
+  "axis_in_part_frame": "+X",
+  "angle_degrees": 180,
+  "pivot_in_part_frame_m": [0.052, 0.00525, -0.018],
+  "reference": "User-confirmed physical photo codex-clipboard-20456ad3-8771-44ad-a7f2-baf7cacc2320.png",
+  "note": "Rotate only the lower mounting around its upright attachment axis through the centre of its 12.5 x 36 mm footprint. Camera, upper mount, wrist registration and source CAD remain unchanged. Visual configuration, not physical calibration."
+}

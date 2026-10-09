@@ -1,0 +1,30 @@
+[
+  {
+    "source": "output/cad_preview_20261005_v1/video_preview.png",
+    "image_sha256": "90002CD8B81C67650B3F0AF6F1E992AE423A41F96D43248D78B062A0BA87389F",
+    "kind": "Existing offline CAD/recorded-camera visualization; original image unchanged",
+    "source_sha256": "90002CD8B81C67650B3F0AF6F1E992AE423A41F96D43248D78B062A0BA87389F",
+    "image": "robot-camera-overview.png"
+  },
+  {
+    "source": "output/delta_archive_20261009_v1/video/final_map.png",
+    "image_sha256": "549F937103CE57966C6356B97613E1C5D87A77F6C81A450176A8F3018832C6D8",
+    "kind": "Existing final offline archive after writer drain; original image unchanged",
+    "source_sha256": "549F937103CE57966C6356B97613E1C5D87A77F6C81A450176A8F3018832C6D8",
+    "image": "archived-surface-views.png"
+  },
+  {
+    "source": "output/motion_preflight_20261005_v1/robot_status.json",
+    "image_sha256": "88F9CAC9BFD4FFCDD0AEB1A4AAD3E721C3CE271965A5E698BFBF0DEB701E12B6",
+    "kind": "Browser screenshot of actual viewer using saved snapshot; no hardware access",
+    "source_sha256": "EAC2A6660A74676B9A5DD76345A8C18CC1A934EE55AE997E140C72B8220B4D8E",
+    "image": "viewer-snapshot.png"
+  },
+  {
+    "source": "output/motion_preflight_20261005_v1/robot_status.json",
+    "image_sha256": "EB6BA5486497ECFEE02503C71838B2A5C46046441FDFCFFC479B145CE07CF9EE",
+    "kind": "Browser screenshot of actual Monitor using saved snapshot; no hardware access",
+    "source_sha256": "EAC2A6660A74676B9A5DD76345A8C18CC1A934EE55AE997E140C72B8220B4D8E",
+    "image": "joint-monitor-snapshot.png"
+  }
+]

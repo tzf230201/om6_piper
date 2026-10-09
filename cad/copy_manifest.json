@@ -1,0 +1,92 @@
+[
+  {
+    "source": "C:\\Users\\teuku\\OneDrive\\Documents\\ChatGPT\\ICRA2027\\arm_with_wirst_mount_d405.stp",
+    "destination": "C:\\Users\\teuku\\OneDrive\\Documents\\ChatGPT\\ICRA2027\\om6_piper\\cad\\source\\arm_with_wirst_mount_d405.stp",
+    "sha256": "A87D63802D87D09729E5DA68CD2FCDABAB0C587E93D867B82F8801EBA067FA51",
+    "operation": "copy_original_unchanged"
+  },
+  {
+    "source": "C:\\Users\\teuku\\Documents\\kubota_lab\\moonshot_demo\\2026_06\\ranger_mini_3\\arm_with_wirst_mount_d405.iam",
+    "destination": "C:\\Users\\teuku\\OneDrive\\Documents\\ChatGPT\\ICRA2027\\om6_piper\\cad\\inventor\\arm_with_wirst_mount_d405.iam",
+    "sha256": "5A862031749D29D8E147AD250809B613C0DC21624C0B56A999B013AD0F1A2B3E",
+    "operation": "copy_original_unchanged"
+  },
+  {
+    "source": "C:\\Users\\teuku\\Documents\\kubota_lab\\moonshot_demo\\2026_06\\ranger_mini_3\\piper_factor_1000.0.ipt",
+    "destination": "C:\\Users\\teuku\\OneDrive\\Documents\\ChatGPT\\ICRA2027\\om6_piper\\cad\\inventor\\piper_factor_1000.0.ipt",
+    "sha256": "A522588DD03674916DC689D9A1BFB2F9931384E8964F434F451A7CB1551E87F3",
+    "operation": "copy_original_unchanged"
+  },
+  {
+    "source": "C:\\Users\\teuku\\Documents\\kubota_lab\\moonshot_demo\\2025_11\\3d_design_arm_camera\\realsense_d405_mounting_bot.ipt",
+    "destination": "C:\\Users\\teuku\\OneDrive\\Documents\\ChatGPT\\ICRA2027\\om6_piper\\cad\\inventor\\realsense_d405_mounting_bot.ipt",
+    "sha256": "85197CE23CD4B2EFF1CC272792AA99B88C630B0DAC4DDEC2B99AD4CEF48EE7A9",
+    "operation": "copy_original_unchanged"
+  },
+  {
+    "source": "C:\\Users\\teuku\\Documents\\kubota_lab\\moonshot_demo\\2025_11\\3d_design_arm_camera\\realsense_d405_mounting_top.ipt",
+    "destination": "C:\\Users\\teuku\\OneDrive\\Documents\\ChatGPT\\ICRA2027\\om6_piper\\cad\\inventor\\realsense_d405_mounting_top.ipt",
+    "sha256": "F31C8F0C308C3153D2109B4A845F6E8BF26172F793CF6EC958BB8221AE71F986",
+    "operation": "copy_original_unchanged"
+  },
+  {
+    "source": "C:\\Users\\teuku\\Documents\\kubota_lab\\moonshot_demo\\2025_11\\3d_design_arm_camera\\RealSense_D405\\RealSense_D405\\RealSense_D405.ipt",
+    "destination": "C:\\Users\\teuku\\OneDrive\\Documents\\ChatGPT\\ICRA2027\\om6_piper\\cad\\inventor\\RealSense_D405.ipt",
+    "sha256": "D0ADD344C98DF5BCC21FDFAEC327633AFEF152052482C2135006DA8CAB7AE1AD",
+    "operation": "copy_original_unchanged"
+  },
+  {
+    "source": "C:\\Users\\teuku\\Documents\\kubota_lab\\moonshot_demo\\2026_06\\ranger_mini_3\\piper_factor_1000.0.stl",
+    "destination": "C:\\Users\\teuku\\OneDrive\\Documents\\ChatGPT\\ICRA2027\\om6_piper\\cad\\inventor\\piper_factor_1000.0.stl",
+    "sha256": "C3CE37A0C1AAB8EE6D9DACF9F28DE85843997B3BF78AF5F65C1A25908935AE33",
+    "operation": "copy_original_unchanged"
+  },
+  {
+    "source": "C:\\Users\\teuku\\OneDrive\\Documents\\ChatGPT\\ICRA2027\\tmp\\pdfs\\d400_march2023.pdf",
+    "destination": "C:\\Users\\teuku\\OneDrive\\Documents\\ChatGPT\\ICRA2027\\om6_piper\\cad\\reference\\d400_march2023.pdf",
+    "sha256": "78EC24FE0BFD66ECC409B1A8362D1CBF9155FFBF01E3B09EEA431F815076F6A7",
+    "operation": "copy_original_unchanged"
+  },
+  {
+    "source": "C:\\Users\\teuku\\OneDrive\\Documents\\ChatGPT\\ICRA2027\\tmp\\pdfs\\d405_origin-089.png",
+    "destination": "C:\\Users\\teuku\\OneDrive\\Documents\\ChatGPT\\ICRA2027\\om6_piper\\cad\\reference\\d405_origin-089.png",
+    "sha256": "34C37384A1F1C4BDFF07E0B9C12AF7D84A501BB9AD567FE0D9EF760045F52E4E",
+    "operation": "copy_original_unchanged"
+  },
+  {
+    "source": "C:\\Users\\teuku\\OneDrive\\Documents\\ChatGPT\\ICRA2027\\tmp\\pdfs\\d405_origin-090.png",
+    "destination": "C:\\Users\\teuku\\OneDrive\\Documents\\ChatGPT\\ICRA2027\\om6_piper\\cad\\reference\\d405_origin-090.png",
+    "sha256": "D66804B38A7AC3D258BBF9EC9CF3784D035218EE56D9332121F216E638D4ED02",
+    "operation": "copy_original_unchanged"
+  },
+  {
+    "source": "C:\\Users\\teuku\\OneDrive\\Documents\\ChatGPT\\ICRA2027\\tmp\\pdfs\\d405_origin-091.png",
+    "destination": "C:\\Users\\teuku\\OneDrive\\Documents\\ChatGPT\\ICRA2027\\om6_piper\\cad\\reference\\d405_origin-091.png",
+    "sha256": "8B42C938C77A3806E21CA6ACFF70493875C7C4EA141B7BAC6C4C13BB9B7CEE4E",
+    "operation": "copy_original_unchanged"
+  },
+  {
+    "source": "C:\\Users\\teuku\\OneDrive\\Documents\\ChatGPT\\ICRA2027\\tmp\\pdfs\\d405_origin-092.png",
+    "destination": "C:\\Users\\teuku\\OneDrive\\Documents\\ChatGPT\\ICRA2027\\om6_piper\\cad\\reference\\d405_origin-092.png",
+    "sha256": "FDC2A585C8645DA3D3F5314F13D9CBD9CAA57EEE7112E5AC342C94264DC1EC86",
+    "operation": "copy_original_unchanged"
+  },
+  {
+    "source": "C:\\Users\\teuku\\OneDrive\\Documents\\ChatGPT\\ICRA2027\\tmp\\pdfs\\d405_origin-093.png",
+    "destination": "C:\\Users\\teuku\\OneDrive\\Documents\\ChatGPT\\ICRA2027\\om6_piper\\cad\\reference\\d405_origin-093.png",
+    "sha256": "F55D81930F60DF656D50B57C2F0CD82E0BC07E415B10DABC5F74C2ECAF1F075F",
+    "operation": "copy_original_unchanged"
+  },
+  {
+    "source": "C:\\Users\\teuku\\OneDrive\\Documents\\ChatGPT\\ICRA2027\\tmp\\pdfs\\official_d405.stl",
+    "destination": "C:\\Users\\teuku\\OneDrive\\Documents\\ChatGPT\\ICRA2027\\om6_piper\\cad\\reference\\official_d405.stl",
+    "sha256": "A248F41149D12B28311829FEECBE7A80CF1481FD05E0F5DF2C4C7ECD556EDD48",
+    "operation": "copy_original_unchanged"
+  },
+  {
+    "source": "C:\\Users\\teuku\\OneDrive\\Documents\\ChatGPT\\ICRA2027\\tmp\\pdfs\\official_d405.urdf.xacro",
+    "destination": "C:\\Users\\teuku\\OneDrive\\Documents\\ChatGPT\\ICRA2027\\om6_piper\\cad\\reference\\official_d405.urdf.xacro",
+    "sha256": "81118E87388C06E4CF1B3DC8B114096DE21C1B235BD283DAFAD84D2BD97AEBB1",
+    "operation": "copy_original_unchanged"
+  }
+]

@@ -1,0 +1,24 @@
+# Local recordings, measurements and recoverable migration history.
+/output/
+/.local/
+/datasets/
+
+# Shared environments and dependency junctions are not source.
+node_modules/
+.venv*/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+build/
+dist/
+*.egg-info/
+
+# Private machine settings and temporary editor files.
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak

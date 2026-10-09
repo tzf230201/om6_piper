@@ -1,0 +1,27 @@
+{
+  "enabled": true,
+  "status": "cad_mesh_registered",
+  "parent_link": "gripper_base",
+  "xyz_m": [
+    -0.0550604650255313,
+    0.0032780099349999925,
+    0.04402700645899699
+  ],
+  "rpy_rad": [
+    1.5712491451270676,
+    0.00018217675642850928,
+    -0.00014785461036870284
+  ],
+  "source_sha256": "a87d63802d87d09729e5da68cd2fcdabab0c587e93d867b82f8801eba067fa51",
+  "calibrated": false,
+  "reference": "Inventor assembly occurrences + referenced piper_factor_1000.0.stl, surface-registered to official gripper_base.STL",
+  "registration_quality": {
+    "validation_points": 6000,
+    "rmse_mm": 0.8678439532671622,
+    "median_mm": 0.03890637734911161,
+    "p95_mm": 1.9857368217131304,
+    "p99_mm": 3.152106238378878,
+    "coverage_0_25mm": 0.7258333333333333
+  },
+  "note": "CAD visual registration, not measured physical hand-eye calibration. Mesh differences remain (~0.87 mm RMS on held-out surfaces). No optical frame or FOV is inferred."
+}

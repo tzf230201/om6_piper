@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="630" viewBox="0 0 1280 630" role="img" aria-labelledby="title desc">
+  <title id="title">OM6 PiPER acquisition, mapping and offline archive paths</title>
+  <desc id="desc">RGB-D frames and joint feedback with nominal CAD extrinsics feed the live surface mapper and read-only viewer. Recorded inputs separately feed offline archive and regional-read research, not deployed into live capture.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10" fill="none" stroke="#6a8596" stroke-width="1.5"/></marker>
+    <style>
+      text{font-family:Segoe UI,Arial,sans-serif;fill:#163447}
+      .title{font-size:30px;font-weight:700}.label{font-size:22px;font-weight:650}
+      .body{font-size:18px;fill:#516b7a}.small{font-size:16px;fill:#516b7a}
+      .eyebrow{font-size:15px;font-weight:700;letter-spacing:2px;fill:#087f8c}
+      .box{fill:#fff;stroke:#d4e1e7;stroke-width:1.5}
+      .arrow{fill:none;stroke:#6a8596;stroke-width:2;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1280" height="630" rx="20" fill="#f4f8fa"/>
+  <rect width="1280" height="6" rx="3" fill="#087f8c"/>
+  <text x="40" y="56" class="title">From wrist observations to a surface graph</text>
+  <text x="40" y="88" class="body">Current live pipeline and a separate, recorded-data research path.</text>
+  <text x="40" y="138" class="eyebrow">01 / ROBOT ACQUISITION AND LIVE MAPPING</text>
+  <rect x="40" y="163" width="235" height="92" rx="12" class="box"/>
+  <text x="60" y="199" class="label">RealSense D405</text>
+  <text x="60" y="230" class="body">RGB-D + timestamps</text>
+  <rect x="40" y="276" width="235" height="102" rx="12" class="box"/>
+  <text x="60" y="312" class="label">PiPER joints</text>
+  <text x="60" y="341" class="body">FK + nominal CAD</text>
+  <text x="60" y="364" class="small">Not hand-eye calibrated</text>
+  <path d="M275 209H300V268H325" class="arrow"/>
+  <path d="M275 327H300V268" fill="none" stroke="#6a8596" stroke-width="2"/>
+  <rect x="325" y="210" width="230" height="116" rx="12" class="box"/>
+  <text x="345" y="248" class="label">Frame + pose</text>
+  <text x="345" y="278" class="body">Freshness checks</text>
+  <text x="345" y="303" class="body">Latest-frame queue</text>
+  <path d="M555 268H605" class="arrow"/>
+  <rect x="605" y="210" width="282" height="116" rx="12" fill="#e6f4f2" stroke="#9bcac4" stroke-width="1.5"/>
+  <text x="625" y="248" class="label">C++ surface mapping</text>
+  <text x="625" y="278" class="body">Depth-image adjacency</text>
+  <text x="625" y="303" class="body">Recent + history buffers</text>
+  <path d="M887 268H937" class="arrow"/>
+  <rect x="937" y="210" width="303" height="116" rx="12" class="box"/>
+  <text x="957" y="248" class="label">Read-only visualization</text>
+  <text x="957" y="278" class="body">Robot model + joint state</text>
+  <text x="957" y="303" class="body">RGB, depth and surface graph</text>
+  <path d="M40 406H1240" stroke="#d4e1e7" stroke-width="1.5"/>
+  <text x="40" y="445" class="eyebrow">02 / OFFLINE ARCHIVE RESEARCH</text>
+  <rect x="40" y="470" width="300" height="85" rx="12" class="box"/>
+  <text x="60" y="505" class="label">RGB-D + pose logs</text>
+  <text x="60" y="533" class="body">Frozen inputs + admission</text>
+  <path d="M340 513H400" class="arrow" stroke-dasharray="6 5"/>
+  <rect x="400" y="470" width="364" height="85" rx="12" class="box"/>
+  <text x="420" y="505" class="label">Delta archive on disk</text>
+  <text x="420" y="533" class="body">Bounded RAM + async writes</text>
+  <path d="M764 513H824" class="arrow" stroke-dasharray="6 5"/>
+  <rect x="824" y="470" width="416" height="85" rx="12" class="box"/>
+  <text x="844" y="505" class="label">Regional read-back and evaluation</text>
+  <text x="844" y="533" class="body">Committed revisions, retention and timing</text>
+  <text x="40" y="598" class="small">The archive candidate is not deployed in live capture. Observed surfaces are not certified free-space or collision evidence.</text>
+</svg>

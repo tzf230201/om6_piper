@@ -1,0 +1,16 @@
+{
+  "name": "piper-readonly-viewer",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "esbuild web/viewer.js --bundle --format=esm --minify --legal-comments=linked --outfile=web/viewer.bundle.js",
+    "test": "node --test web/model.test.js web/fgng.test.js web/joint_monitor.test.js"
+  },
+  "dependencies": {
+    "three": "0.180.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.10",
+    "occt-import-js": "0.0.23"
+  }
+}

@@ -1,0 +1,3 @@
+# Shared dependency junction; never vendor the old dependency tree into this repo.
+node_modules/
+__pycache__/

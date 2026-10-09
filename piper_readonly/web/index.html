@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Monitor lokal AgileX Piper: mesh URDF 3D dan feedback pyAgxArm, read-only.">
+  <title>Piper · Robot Monitor</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <div class="brand"><span class="brand-mark">P</span><div><h1>Piper <span>Robot Monitor</span></h1><p>AGILEX <span class="separator">/</span> pyAgxArm <span class="separator">/</span> LOCAL</p></div></div>
+    <div class="header-actions"><nav class="monitor-nav" aria-label="Menu monitor"><button id="menu-3d" class="active" aria-pressed="true">3D View</button><button id="menu-monitor" aria-pressed="false">Monitor</button></nav><span class="badge readonly">READ ONLY</span><span class="badge" id="connection" role="status">Menghubungkan…</span><button id="theme" title="Ganti tema antarmuka">Tema terang</button></div>
+  </header>
+  <main>
+    <section id="monitor-view" class="monitor-view panel" hidden aria-label="Parameter joint robot">
+      <div class="monitor-heading"><div><p class="monitor-eyebrow">PIPER / TELEMETRY</p><h2>Joint state monitor</h2><p>Semua joint dalam satu tampilan. Nilai berasal dari feedback CAN, bukan perintah target.</p></div><span id="monitor-status" class="badge" role="status">Menunggu feedback</span></div>
+      <div class="monitor-controls"><label><input id="monitor-freeze" type="checkbox"> Freeze tampilan</label><button id="monitor-export" disabled>↓ Snapshot CSV</button><span id="monitor-time">Belum ada sampel</span></div>
+      <div class="monitor-table-wrap"><table class="monitor-table"><caption class="sr-only">Parameter motor dan status enam joint Piper</caption><thead><tr><th scope="col">Parameter <small>unit</small></th><th scope="col">J1</th><th scope="col">J2</th><th scope="col">J3</th><th scope="col">J4</th><th scope="col">J5</th><th scope="col">J6</th></tr></thead><tbody id="monitor-rows"></tbody></table></div>
+      <div class="monitor-legend"><span class="status-ok">● Tidak ada flag</span><span class="status-fault">● Flag aktif</span><span class="status-unknown">● Tidak tersedia / stale</span></div>
+      <p class="monitor-footnote">Batas freshness lokal: 150 ms per jenis feedback. Kecepatan adalah laporan motor (rad/s), bukan estimasi kecepatan flange. Flag “normal” berarti bit tersebut tidak aktif, bukan sertifikasi keselamatan. Freeze hanya menahan tampilan, tidak menghentikan robot.</p>
+    </section>
+    <aside class="displays panel">
+      <h2>Displays</h2><div class="fixed-frame"><span>Fixed frame</span><code>base_link</code></div>
+      <h3>SCENE</h3>
+      <label><input id="show-model" type="checkbox" checked>Robot model <small>URDF</small></label>
+      <p class="camera-note">Visual robot +20 mm pada Z world · koordinat telemetry tetap asli.</p>
+      <label><input id="show-camera" type="checkbox" checked>Wrist D405 <small>CAD</small></label>
+      <p id="camera-note" class="camera-note">Pose assembly CAD · belum kalibrasi kamera</p>
+      <label><input id="show-fgng" type="checkbox" checked>Mapping <small>world</small></label>
+      <label><input id="show-cloud" type="checkbox" checked>Geometri / support <small>points</small></label>
+      <label><input id="show-native" type="checkbox">Edge native <small>pembanding</small></label>
+      <p class="camera-note">Sian: jalur permukaan teramati · merah: edge native tanpa validasi permukaan. Eksperimen, bukan jaminan topologi.</p>
+      <p id="fgng-note" class="camera-note" role="status">Menghubungkan F-GNG…</p>
+      <p class="camera-note">Z world +20 mm · optik perkiraan CAD, belum hand-eye. Bukan peta keselamatan.</p>
+      <button id="fit-map">Fit robot + F-GNG</button>
+      <label><input id="show-grid" type="checkbox" checked>Grid <small>5 cm</small></label>
+      <label><input id="show-axes" type="checkbox" checked>Base axes <small>XYZ</small></label>
+      <label><input id="show-frames" type="checkbox">Link frames <small>TF</small></label>
+      <label><input id="show-wire" type="checkbox">Wireframe</label>
+      <label><input id="show-flange" type="checkbox" checked>Flange feedback</label>
+      <label class="range-label" for="opacity">Opacity <output id="opacity-value">100%</output></label>
+      <input class="opacity" id="opacity" type="range" min="15" max="100" value="100">
+      <h3>ROBOT LINKS</h3><div id="link-tree" class="link-tree" aria-label="Pilih link robot"></div>
+      <div class="source-note"><span class="tiny-dot"></span> Mesh resmi AgileX<p id="model-source">Membaca deskripsi…</p><a href="https://github.com/agilexrobotics/piper_ros" target="_blank" rel="noreferrer">Sumber model ↗</a></div>
+    </aside>
+    <section class="viewport-column">
+      <section class="trajectory-test panel" aria-label="Test trajectory">
+        <div class="trajectory-actions"><a href="http://100.93.232.22:8765/trajectory/scan">Simulasi sapuan lebar ↗</a><a href="http://100.93.232.22:8765/trajectory">Simulasi kecil ±5° ↗</a><button id="run-real-trajectory" disabled aria-describedby="real-trajectory-lock">Run robot asli — terkunci</button></div>
+        <p>Simulasi memakai snapshot lama, bukan pose live; tidak mengirim perintah motor.</p>
+        <details><summary>Kenapa run asli terkunci?</summary><p id="real-trajectory-lock">Commissioning gerak dan stop software belum terverifikasi. Sebelum run asli, lintasan harus dihitung ulang dari pose live dan diperiksa terhadap batas joint, ruang sapuan, serta kabel kamera. Tombol ini belum tersambung ke motor.</p></details>
+      </section>
+      <div class="viewport-toolbar panel"><h2>3D View</h2><span class="toolbar-divider"></span><span id="view-label">Perspective</span><div class="toolbar-right"><button id="fit" title="F · Muat seluruh robot">Fit robot</button><button id="reset" title="R · Reset kamera">Reset view</button><button id="fullscreen" title="Layar penuh">⛶</button></div></div>
+      <div id="viewport" tabindex="0" aria-label="Viewer 3D. Drag untuk orbit, klik kanan untuk pan, scroll untuk zoom. F untuk fit, R untuk reset.">
+        <canvas id="scene"></canvas>
+        <div class="view-top"><span id="mesh-status">MEMUAT MESH</span><span>Z UP · METERS</span></div>
+        <div class="view-presets" role="group" aria-label="Arah kamera"><button data-view="iso" class="active" title="Perspektif isometrik">ISO</button><button data-view="front" title="Lihat dari +X">FRONT</button><button data-view="side" title="Lihat dari −Y">SIDE</button><button data-view="top" title="Lihat dari +Z">TOP</button></div>
+        <div id="notice" class="notice" role="status">Memuat model dan feedback…</div>
+        <div class="selection-info" id="selection-info"><span>LINK TERPILIH · KOORDINAT BASE ASLI</span><b id="selected-name">base_link</b><code id="selected-position">—</code></div>
+        <div class="axis-legend"><b class="axis-x">X</b><b class="axis-y">Y</b><b class="axis-z">Z</b><span>base_link</span></div>
+        <div class="view-help">Drag <b>orbit</b> <span>·</span> Klik kanan <b>pan</b> <span>·</span> Scroll <b>zoom</b><br>Klik mesh untuk memilih link</div>
+      </div>
+      <section class="joint-panel panel"><div class="section-heading"><h2>Joint feedback</h2><span>DERAJAT · BATAS DARI URDF</span></div><div id="joint-cards" class="joint-cards"></div></section>
+    </section>
+    <aside class="telemetry panel">
+      <div class="section-heading"><h2>Robot state</h2><span class="tiny-dot" id="state-dot"></span></div>
+      <div class="state-summary"><span>Controller</span><strong id="controller">—</strong><p id="control-mode">Menunggu feedback</p></div>
+      <dl class="facts"><div><dt>Motor enable</dt><dd id="enabled">—</dd></div><div><dt>Kode error utama</dt><dd id="error-code">—</dd></div><div><dt>Firmware</dt><dd id="firmware">—</dd></div><div><dt>Interface</dt><dd>gs_usb · 1 Mbps</dd></div></dl>
+      <h3>FLANGE · CONTROLLER</h3><div id="flange-xyz" class="xyz-values"><div><span>X</span><b>—</b></div><div><span>Y</span><b>—</b></div><div><span>Z</span><b>—</b></div></div><p class="unit-note">Posisi base frame · mm</p><div class="comparison"><span>Δ URDF ↔ feedback</span><b id="fk-delta">—</b></div>
+      <h3>GRIPPER</h3><dl class="facts compact"><div><dt>Bukaan</dt><dd id="gripper-width">—</dd></div><div><dt>Force</dt><dd id="gripper-force">—</dd></div></dl>
+      <h3>DRIVER FEEDBACK</h3><table><thead><tr><th>Joint</th><th>°C</th><th>Volt</th><th>Flags</th></tr></thead><tbody id="driver-rows"></tbody></table>
+      <div class="driver-alert" id="driver-alert">Menunggu data driver.</div>
+      <button id="snapshot" class="snapshot-button">↓ Simpan snapshot JSON</button>
+    </aside>
+  </main>
+  <footer><div><span class="tiny-dot" id="footer-dot"></span><span id="sample-time">Belum ada sampel</span></div><div><span id="rx-rate">RX —</span><span class="separator">|</span> <span id="tx-info">Motor command diblokir</span><span class="separator">|</span><span id="render-rate">— FPS</span></div></footer>
+  <script type="module" src="/viewer.bundle.js"></script>
+</body>
+</html>

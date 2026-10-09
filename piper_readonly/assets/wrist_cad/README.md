@@ -1,5 +1,15 @@
 # D405 wrist CAD import and assembly registration
 
+## Design reference
+
+On 2026-10-09, the user identified
+[RealSense wrist mount for PiPER arm on GrabCAD](https://grabcad.com/library/realsense-wrist-mount-for-piper-arm-1)
+as the mounting-design source. The page returned HTTP 403 during verification;
+author, license, revision and correspondence to the local CAD are not yet verified.
+No downloaded geometry replaces the original local files or the derived viewer
+meshes described below. See the [mechanical guide](../../../docs/MECHANICAL_CAD.md)
+for repository-level provenance.
+
 ## Active viewer-only seating correction
 
 `fitted_mount.json` supersedes the earlier bounding-box half-turn below. The user

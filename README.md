@@ -71,6 +71,14 @@ robot base frame. Host-side timing and freshness checks gate admission; this is
 not hardware exposure synchronization. Display-only offsets are kept separate
 from physical mapping coordinates.
 
+### Camera mounting CAD
+
+The user-provided source for the wrist-mount design is
+[RealSense wrist mount for PiPER arm on GrabCAD](https://grabcad.com/library/realsense-wrist-mount-for-piper-arm-1).
+The existing local STEP and Inventor files are retained under `cad/`; the viewer
+uses derived meshes with a documented seating correction. See
+[Mechanical and CAD](docs/MECHANICAL_CAD.md) for source provenance and transforms.
+
 ## Viewer and mapping examples
 
 <details>

@@ -1,5 +1,21 @@
 # Mekanik, CAD dan koordinat kamera
 
+## Sumber desain mounting kamera
+
+Pengguna menunjuk
+[RealSense wrist mount for PiPER arm — GrabCAD](https://grabcad.com/library/realsense-wrist-mount-for-piper-arm-1)
+sebagai sumber desain mounting kamera pada 9 Oktober 2026.
+
+Halaman tersebut mengembalikan HTTP 403 saat pemeriksaan, sehingga nama pembuat,
+lisensi, versi dan kesamaan berkas unduhan dengan CAD lokal belum diverifikasi.
+Tautan ini mencatat referensi dari pengguna, bukan bukti kecocokan hash atau izin
+redistribusi. Tidak ada unduhan maupun penggantian CAD lokal pada pembaruan ini.
+
+Bedakan desain sumber, berkas lokal yang tercatat dalam `copy_manifest.json`,
+dan mesh turunan viewer yang dikoreksi agar duduk pada mesh gripper resmi.
+Koreksi visual tersebut dijelaskan di bawah; tautan sumber tidak mengubah
+transform kamera atau konfigurasi pemasangan yang sedang dipakai.
+
 ## Koleksi CAD
 
 `../cad/source/arm_with_wirst_mount_d405.stp` adalah salinan identik STEP pengguna.

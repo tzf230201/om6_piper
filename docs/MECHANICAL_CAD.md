@@ -1,78 +1,79 @@
-# Mekanik, CAD dan koordinat kamera
+# Mechanics, CAD and camera coordinates
 
-## Sumber desain mounting kamera
+## Camera mount design source
 
-Pengguna menunjuk
+The user identified
 [RealSense wrist mount for PiPER arm — GrabCAD](https://grabcad.com/library/realsense-wrist-mount-for-piper-arm-1)
-sebagai sumber desain mounting kamera pada 9 Oktober 2026.
+as the camera mount design source on 9 October 2026.
 
-Halaman tersebut mengembalikan HTTP 403 saat pemeriksaan, sehingga nama pembuat,
-lisensi, versi dan kesamaan berkas unduhan dengan CAD lokal belum diverifikasi.
-Tautan ini mencatat referensi dari pengguna, bukan bukti kecocokan hash atau izin
-redistribusi. Tidak ada unduhan maupun penggantian CAD lokal pada pembaruan ini.
+The page returned HTTP 403 during inspection, so the author, license, version and
+agreement between the download and local CAD have not been verified. This link
+records the user's reference; it does not establish matching hashes or permission
+to redistribute. No downloads or local CAD replacements were made in that update.
 
-Bedakan desain sumber, berkas lokal yang tercatat dalam `copy_manifest.json`,
-dan mesh turunan viewer yang dikoreksi agar duduk pada mesh gripper resmi.
-Koreksi visual tersebut dijelaskan di bawah; tautan sumber tidak mengubah
-transform kamera atau konfigurasi pemasangan yang sedang dipakai.
+Distinguish the source design, local files listed in `copy_manifest.json`, and
+derived viewer meshes adjusted to seat on the official gripper mesh. The visual
+corrections are described below; the source link does not change the active camera
+transform or mounting configuration.
 
-## Koleksi CAD
+## CAD collection
 
-`../cad/source/arm_with_wirst_mount_d405.stp` adalah salinan identik STEP pengguna.
-`../cad/inventor/` berisi IAM, empat IPT yang tercatat di laporan Inventor lama,
-dan STL arm pendukung. `../cad/reference/` menyimpan salinan referensi D405 yang
-sudah dipakai. Hash dan lokasi asal ada di `../cad/copy_manifest.json`.
-Asli di proyek `kubota_lab/moonshot_demo` tidak dipindahkan atau diedit.
+`../cad/source/arm_with_wirst_mount_d405.stp` is an identical copy of the user's STEP.
+`../cad/inventor/` contains the IAM, four IPT files listed in the earlier Inventor
+report, and a supporting arm STL. `../cad/reference/` retains the D405 reference
+copies already in use. Hashes and original locations are in `../cad/copy_manifest.json`.
+Original files in `kubota_lab/moonshot_demo` were not moved or edited.
 
-Ini koleksi direct dependencies berdasarkan `inventor_assembly.json`, **bukan
-Inventor Pack and Go yang telah diverifikasi**. Referensi tersimpan di IAM dapat
-tetap mengarah ke path asli; lakukan resolve ke IPT lokal saat membuka salinan.
-Tidak ada Inventor COM, regenerate, perubahan constraint atau save CAD pada tugas ini.
+This is a collection of direct dependencies based on `inventor_assembly.json`,
+**not a verified Inventor Pack and Go**. Stored IAM references may still point to
+original paths; resolve them to the local IPT copies when opening the assembly.
+No Inventor COM calls, regeneration, constraint changes or CAD saves were performed.
 
-STEP hanya berisi tiga solid kamera/mounting. Komponen Piper dalam STEP tidak
-menyimpan solid robot. Mesh arm berasal dari STL/URDF terpisah; jangan menyebut
-STEP ini assembly robot lengkap.
+The STEP contains only three camera/mount solids. Its Piper component contains
+no robot solids. The arm mesh comes from separate STL/URDF files; this STEP is
+not a complete robot assembly.
 
-## Model aktif di viewer
+## Active viewer model
 
-Lokasi yang masih dipakai: `../../piper_readonly/piper_model_source/` untuk URDF
-dan mesh robot, `../piper_readonly/assets/wrist_cad/` di dalam `om6_piper` untuk
-tiga bagian D405. Jalur aset wrist lama mengarah ke folder baru yang sama.
-`attachment.json` menentukan pose terhadap `gripper_base`; `fitted_mount.json`
-menentukan koreksi pemasangan viewer yang aktif. Mount dan kamera ikut joint 6,
-bukan bukaan jari. `bottom_mount_flip.json` menyimpan eksperimen reversal lama.
+Active locations: `../../piper_readonly/piper_model_source/` for robot URDF/meshes,
+and `../piper_readonly/assets/wrist_cad/` inside `om6_piper` for the three D405 parts.
+The legacy wrist asset path points to this same new folder. `attachment.json`
+defines the pose relative to `gripper_base`; `fitted_mount.json` defines the active
+viewer seating corrections. The mount and camera follow joint 6, not finger
+opening. `bottom_mount_flip.json` retains an earlier reversal experiment.
 
-Koreksi mesh bawah mengubah pitch lubang 12,5 menjadi 12 mm dan recess 0,6 mm
-agar cocok dengan tab pada mesh resmi. Kamera/mount atas bergeser sebagai satu
-benda kaku agar engsel sejajar. Ini **mesh turunan untuk visualisasi**, bukan
-dimensi manufaktur yang disetujui, sertifikasi collision atau kalibrasi hand-eye.
-CAD asli, STL hasil konversi awal dan laporan fit tetap dipertahankan.
+The lower mesh correction changes hole pitch from 12.5 to 12 mm and adds a 0.6 mm
+recess to fit the tab on the official mesh. The upper camera/mount moves as a rigid
+body to align the hinge. These are **derived visualization meshes**, not approved
+manufacturing dimensions, collision certification or hand-eye calibration.
+Original CAD, initially converted STL files and fit reports are retained.
 
-Penjelasan lengkap: [provenance CAD](../piper_readonly/assets/wrist_cad/README.md).
-Tool: `import_wrist_step.mjs`, `inspect_inventor.ps1`, `register_wrist_cad.py`,
+Full explanation: [CAD provenance](../piper_readonly/assets/wrist_cad/README.md).
+Tools: `import_wrist_step.mjs`, `inspect_inventor.ps1`, `register_wrist_cad.py`,
 `refine_wrist_registration.py`, `fit_wrist_mount.py`, `test_fitted_mount.py`.
-Jangan menjalankan generator untuk sekadar memeriksa path karena beberapa
-menulis ulang aset/konfigurasi. Tes yang benar-benar offline dipisahkan.
+Do not run generators merely to check paths: some rewrite assets/configuration.
+Tests that are fully offline are kept separate.
 
-## Transform kamera
+## Camera transforms
 
-Model dasar:
+Base model:
 
 `T_base_optical(q) = T_base_gripper(q) × T_gripper_camera_body × T_body_optical`.
 
-Estimasi nominal D405 ada di
+The nominal D405 estimate is in
 `../../output/cad_optical_20261005_v1/fgng_config.cad_nominal.json`:
 `body_from_depth_optical.xyz = [0.009, 0, -0.0038] m`,
-`rpy = [0, 0, pi] rad`. Optical X/Y berlawanan CAD X/Y; Z tetap searah.
-Itu perkiraan CAD + mekanik vendor, dengan `calibrated: false`, bukan hasil
-pengukuran hand-eye atau error bound.
+`rpy = [0, 0, pi] rad`. Optical X/Y oppose CAD X/Y; Z points the same way.
+This is a CAD + vendor mechanical estimate with `calibrated: false`, not a
+measured hand-eye result or an error bound.
 
-Viewer lama mengangkat visual robot +20 mm pada world Z; mode F-GNG lama juga
-memiliki world offset yang dikonfigurasi. Replay/scan meja yang lebih baru memakai
-base frame fisik: `table_scan.configuration()` mengeset offset mapping menjadi
-`[0,0,0]`, terpisah dari lift tampilan. Jangan menambah 20 mm kedua kali, mengubah
-CAD, atau menganggap nilai display sebagai posisi fisik.
+The legacy viewer lifts the robot visualization by +20 mm in world Z; the older
+F-GNG mode also has a configured world offset. Newer tabletop replay/scans use
+the physical base frame: `table_scan.configuration()` sets the mapping offset
+to `[0,0,0]`, separately from the display lift. Do not add 20 mm twice, change CAD,
+or interpret display values as physical positions.
 
-Plan meja ada di `../../output/table_scan_20261007_v1/plan.json`. Tinggi meja
-adalah asumsi plan; mesh preview bukan pemeriksaan lengkap kabel, jari, lingkungan
-atau self-collision. Kinematika, kalibrasi dan mounting tidak diubah oleh konsolidasi.
+The tabletop plan is in `../../output/table_scan_20261007_v1/plan.json`. Table height
+is a planning assumption; the mesh preview does not fully check cables, fingers,
+the environment or self-collision. Consolidation did not change kinematics,
+calibration or mounting.

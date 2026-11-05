@@ -24,7 +24,7 @@ test('hybrid distinguishes metric map from sampled display and cached graph',()=
     stats:{geometry_voxels:100000,geometry_voxel_m:.008,display_points:16000,graph_age_frames:null,pipeline_ms:12}};
   assert.equal(graphGeometry(data).support.length,3);
   assert.match(mappingSummary(data),/map 100000 voxel @ 8.0 mm/);
-  assert.match(mappingSummary(data),/view 16000 titik/);
+  assert.match(mappingSummary(data),/view 16000 points/);
   assert.match(mappingSummary(data),/warming/);
   data.stats.graph_age_frames=4;
   assert.match(mappingSummary(data),/cache 4 frame/);

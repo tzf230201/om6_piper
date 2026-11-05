@@ -31,10 +31,19 @@ class RepositoryTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 repo_file(name)
 
-    def test_previous_readme_and_hardware_sources_preserved(self):
+    def test_previous_readme_archive_commands_and_hardware_sources_preserved(self):
         original = REPO_ROOT / '.local/repository_layout_20261009/original_root'
-        self.assertEqual((REPO_ROOT / 'docs/research/DEVELOPMENT_LOG.md').read_bytes(),
-                         (original / 'README.md').read_bytes())
+        # The active log is translated; the original archive remains byte-exact.
+        self.assertEqual(hashlib.sha256((original / 'README.md').read_bytes()).hexdigest(),
+                         '95e3e58b095bf9ffbc99b142d0b872ccdb131dae727acbadcebe38a0da018a92')
+        def commands(path):
+            blocks = re.findall(r'```powershell\n(.*?)```',
+                                path.read_text(encoding='utf-8'), re.S)
+            return [[line for line in block.splitlines()
+                     if line.strip() and not line.lstrip().startswith('#')]
+                    for block in blocks]
+        self.assertEqual(commands(REPO_ROOT / 'docs/research/DEVELOPMENT_LOG.md'),
+                         commands(original / 'README.md'))
         self.assertEqual((REPO_ROOT / 'src/trajectory_test.py').read_bytes(),
                          (original / 'trajectory_test.py').read_bytes())
         for p in (REPO_ROOT / 'examples/manual').glob('*.py'):

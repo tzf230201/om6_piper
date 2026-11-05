@@ -65,7 +65,7 @@ class View:
         label(im,'READ ONLY',1040,35,GOLD,.74)
         label(im,'Feedback fresh' if fresh else 'NO FRESH JOINT DATA',850,63,GREEN if fresh else RED,.51)
         cv2.line(im,(20,83),(1260,83),(65,64,60),1)
-        label(im,'Posisi lengan - skema kinematika SDK',20,114,FG,.54)
+        label(im,'Arm pose - SDK kinematic schematic',20,114,FG,.54)
         label(im,'Drag: orbit    Scroll: zoom    V: reset view',20,139,MUTED,.44)
         if fresh:
             transforms=chain(data['joint_angles_rad'])
@@ -96,19 +96,19 @@ class View:
                 cv2.drawMarker(im,tuple(xy),GREEN,cv2.MARKER_DIAMOND,15,2)
                 discrepancy=np.linalg.norm(points[-1]-feedback[:3])*1000
                 label(im,f'FK SDK vs flange feedback: {discrepancy:.1f} mm',20,580,MUTED,.49)
-            label(im,'Titik hijau: flange feedback controller',20,606,GREEN,.48)
+            label(im,'Green point: controller flange feedback',20,606,GREEN,.48)
             axes=self.project([[0,0,0],[.1,0,0],[0,.1,0],[0,0,.1]])
             for i,(name,col) in enumerate(zip('XYZ',[(85,90,240),(90,200,105),(225,160,80)]),1):
                 cv2.arrowedLine(im,tuple(axes[0]),tuple(axes[i]),col,2,cv2.LINE_AA,tipLength=.16)
                 label(im,name,int(axes[i,0]+5),int(axes[i,1]),col,.43)
         else:
-            label(im,'Menunggu enam joint dengan data < 0.5 detik',30,350,RED,.58)
+            label(im,'Waiting for all six joints with data younger than 0.5 s',30,350,RED,.58)
         x=670
         mode=CTRL.get(status['ctrl_mode'],str(status['ctrl_mode'])) if status else 'Unknown / stale'
         state=ARM.get(status['arm_status'],str(status['arm_status'])) if status else 'Unknown / stale'
         label(im,f'Controller: {state}    Mode: {mode}',x,113,GREEN if status and status['arm_status']==0 else RED,.53)
         label(im,f"Firmware: {firmware.get('software_version','Unknown')}   Hardware: {firmware.get('hardware_version','Unknown')}",x,140,MUTED,.46)
-        label(im,'Joint    Sudut (deg)    Enable    Motor C    Volt    Flags',x,183,MUTED,.46)
+        label(im,'Joint    Angle (deg)    Enable    Motor C    Volt    Flags',x,183,MUTED,.46)
         for i in range(6):
             y=221+i*43
             d=data['drivers'][i]
@@ -136,10 +136,10 @@ class View:
             label(im,'RPY deg: '+ '  '.join(f'{np.rad2deg(v):+.2f}' for v in pose[3:]),x,603,FG,.55)
         cv2.line(im,(20,633),(1260,633),(65,64,60),1)
         flagged=[f'J{i+1} (0x{d["foc_status_code"]:02X})' for i,d in enumerate(data['drivers']) if d and d['foc_status_code']&0xBF]
-        label(im,'Driver flags: '+(', '.join(flagged) if flagged else 'tidak ada pada feedback yang tersedia'),20,663,RED if flagged else FG,.57)
-        label(im,'0x30: SDK menandai collision_status + driver_error_status; status controller ditampilkan terpisah.',20,691,MUTED,.47)
+        label(im,'Driver flags: '+(', '.join(flagged) if flagged else 'none in available feedback'),20,663,RED if flagged else FG,.57)
+        label(im,'0x30: SDK flags collision_status + driver_error_status; controller status is shown separately.',20,691,MUTED,.47)
         label(im,f"RX {data['rx_frame_count']} frames  |  {rate:.0f} frames/s  |  Motor command TX: 0  |  Firmware query: {data['firmware_queries_sent']}",20,724,MUTED,.50)
-        label(im,'S: simpan snapshot    Q / Esc: tutup monitor',20,756,FG,.50)
+        label(im,'S: save snapshot    Q / Esc: close monitor',20,756,FG,.50)
         label(im,data['captured_at'][11:19],1135,756,MUTED,.52)
         return im
 

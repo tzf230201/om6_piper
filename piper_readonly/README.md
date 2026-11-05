@@ -1,16 +1,16 @@
-# Aplikasi Piper dan GUI
+# Piper application and GUI
 
-Ini lokasi source aplikasi aktif setelah migrasi 9 Oktober 2026.
-Mulai dari [panduan utama](../docs/START_HERE.md). Jalankan launcher
-`../piper.cmd`; gunakan `doctor` untuk cek tanpa hardware.
+This is the active application source location following the 9 October 2026 migration.
+Start with the [main guide](../docs/START_HERE.md). Run the `../piper.cmd` launcher;
+use `doctor` to check the installation without accessing hardware.
 
-`web/` berisi GUI dan pengujian frontend; `assets/wrist_cad/` berisi mesh D405.
-`app_paths.py` menyatakan dependency bersama secara eksplisit. State/interlock,
-SDK, environment, URDF resmi dan arsip riset tidak digandakan di sini.
+`web/` contains the GUI and frontend tests; `assets/wrist_cad/` contains D405 meshes.
+`app_paths.py` explicitly identifies shared dependencies. State/interlock, SDK,
+environments, official URDF and research archives are not duplicated here.
 
-Perintah developer: `npm test` dan `npm run build`. Keduanya tidak menggerakkan
-robot. Dependency Node tetap menggunakan folder bersama melalui junction.
-Tes lengkap serta laporan migrasi ada di [status migrasi](../docs/MIGRATION.md).
+Developer commands: `npm test` and `npm run build`. Neither moves the robot.
+Node dependencies remain shared through a junction. Full tests and migration
+reports are described in the [migration status](../docs/MIGRATION.md).
 
-Jangan menjalankan backup source di `../.local/migration_app_20261009/`; backup hanya
-untuk audit/pemulihan. Source aktif diedit di folder ini, bukan pengarah legacy.
+Do not run backup sources in `../.local/migration_app_20261009/`; they are retained
+for auditing and recovery. Edit active sources here, not the legacy adapters.

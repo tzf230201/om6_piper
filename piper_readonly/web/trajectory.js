@@ -20,7 +20,7 @@ async function main(){
   const loader=new STLLoader();let loaded=0;
   await Promise.all(model.links.flatMap(link=>link.visuals.map(async v=>{
     const mesh=new THREE.Mesh(loader.parse(await get(v.url,'arrayBuffer')),new THREE.MeshStandardMaterial({color:new THREE.Color(...v.color.slice(0,3)),roughness:.5,metalness:.2}));
-    mesh.position.fromArray(v.origin.xyz);mesh.quaternion.copy(urdfQuaternion(v.origin.rpy));mesh.scale.fromArray(v.scale);tree.links[link.name].add(mesh);$('stats').textContent=`Memuat ${++loaded} mesh…`;
+    mesh.position.fromArray(v.origin.xyz);mesh.quaternion.copy(urdfQuaternion(v.origin.rpy));mesh.scale.fromArray(v.scale);tree.links[link.name].add(mesh);$('stats').textContent=`Loading ${++loaded} mesh…`;
   })));
   const optical=new THREE.Group();optical.position.fromArray(plan.optical_extrinsic.xyz);optical.quaternion.copy(urdfQuaternion(plan.optical_extrinsic.rpy));tree.links.d405_camera_body.add(optical);
   optical.add(new THREE.AxesHelper(.065),new THREE.Mesh(new THREE.SphereGeometry(.003,12,8),new THREE.MeshBasicMaterial({color:0xffb364})));
@@ -45,11 +45,11 @@ async function main(){
     if(s.camera_base_forward){optical.getWorldDirection(opticalDirection);if(opticalDirection.distanceTo(new THREE.Vector3(...s.camera_base_forward))>1e-8)throw Error('Camera direction/FK mismatch');}
     $('time').value=i;$('clock').textContent=s.t_s.toFixed(2)+' / '+plan.duration_s+' s';
     if(plan.moving_joint_indices){
-      $('stats').textContent='Δ dari awal · '+moving.map(j=>{const d=THREE.MathUtils.radToDeg(s.q_rad[j]-plan.q0_rad[j]);return `J${j+1} ${d>=0?'+':''}${d.toFixed(1)}°`;}).join(' · ');
-      $('phase').textContent=s.t_s===plan.duration_s?'Selesai — kembali ke pose awal':(plan.stages.find(p=>s.t_s>=p.start_s&&s.t_s<p.end_s)?.label||'Pose awal — persiapan');
+      $('stats').textContent='Δ from start · '+moving.map(j=>{const d=THREE.MathUtils.radToDeg(s.q_rad[j]-plan.q0_rad[j]);return `J${j+1} ${d>=0?'+':''}${d.toFixed(1)}°`;}).join(' · ');
+      $('phase').textContent=s.t_s===plan.duration_s?'Finished — returned to starting pose':(plan.stages.find(p=>s.t_s>=p.start_s&&s.t_s<p.end_s)?.label||'Starting pose — preparation');
     }else{
       const delta=(s.q_rad[5]-plan.q0_rad[5])*180/Math.PI;
-      $('stats').textContent=`SIMULASI · J6 relatif ${delta>=0?'+':''}${delta.toFixed(2)}° · sudut ${ (s.q_rad[5]*180/Math.PI).toFixed(2)}° · ${(s.j6_speed_rad_s*180/Math.PI).toFixed(2)}°/s`;
+      $('stats').textContent=`SIMULATION · relative J6 ${delta>=0?'+':''}${delta.toFixed(2)}° · angle ${ (s.q_rad[5]*180/Math.PI).toFixed(2)}° · ${(s.j6_speed_rad_s*180/Math.PI).toFixed(2)}°/s`;
     }
     const x=35+270*s.t_s/plan.duration_s;$('cursor').setAttribute('x1',x);$('cursor').setAttribute('x2',x);
   }
@@ -60,20 +60,20 @@ async function main(){
     controls.update();
   }
   for(const reason of plan.preflight.reasons){const li=document.createElement('li');li.textContent=reason;$('blockers').append(li);}
-  $('speed').textContent=`Maksimum ${(plan.peak_joint_speed_deg_s??plan.peak_j6_speed_deg_s).toFixed(2)}°/s, profil mulai/berhenti halus.`;
-  $('excursion').textContent=`Maksimum ${plan.camera_max_distance_from_start_mm.toFixed(2)} mm (nominal).`;
+  $('speed').textContent=`Maximum ${(plan.peak_joint_speed_deg_s??plan.peak_j6_speed_deg_s).toFixed(2)}°/s, smooth start/stop profile.`;
+  $('excursion').textContent=`Maximum ${plan.camera_max_distance_from_start_mm.toFixed(2)} mm (nominal).`;
   $('stamp').textContent=plan.source_snapshot_at;
   if($('initial-joints'))$('initial-joints').textContent=plan.q0_deg.map((q,j)=>`J${j+1} ${q.toFixed(3)}°`).join(' · ');
   if($('rebase-delta'))$('rebase-delta').textContent=(plan.previous_start_delta_deg||[]).map((q,j)=>`J${j+1} ${q>=0?'+':''}${q.toFixed(2)}°`).join(' · ')||'—';
   if($('feedback-audit')&&plan.feedback_audit){
     const audit=plan.feedback_audit;
-    $('feedback-audit').textContent=`${audit.sample_count-audit.invalid_count}/${audit.sample_count} sampel lolos. Umur feedback maksimum ${audit.max_required_age_ms.toFixed(0)} ms; batas 150 ms. ${audit.invalid_count?'Belum siap untuk gerak fisik.':'Pemeriksaan komunikasi saja, bukan validasi keselamatan gerak.'}`;
+    $('feedback-audit').textContent=`${audit.sample_count-audit.invalid_count}/${audit.sample_count} samples passed. Maximum feedback age ${audit.max_required_age_ms.toFixed(0)} ms; limit 150 ms. ${audit.invalid_count?'Not ready for physical motion.':'Communication check only, not motion safety validation.'}`;
   }
   if(plan.joint_plot_indices){
-    $('excursion').textContent=`${(plan.camera_max_distance_from_start_mm/10).toFixed(1)} cm (estimasi CAD).`;
-    $('comparison').textContent=`${plan.camera_displacement_vs_wrist.toFixed(1)}× lebih jauh dari posisi awal.`;
-    $('direction').textContent=`${plan.camera_max_axis_change_deg.toFixed(1)}° dari arah awal (nominal).`;
-    $('duration').textContent=`${plan.duration_s} detik pada pemutaran 1×.`;
+    $('excursion').textContent=`${(plan.camera_max_distance_from_start_mm/10).toFixed(1)} cm (CAD estimate).`;
+    $('comparison').textContent=`${plan.camera_displacement_vs_wrist.toFixed(1)}× farther from the starting position.`;
+    $('direction').textContent=`${plan.camera_max_axis_change_deg.toFixed(1)}° from the starting direction (nominal).`;
+    $('duration').textContent=`${plan.duration_s} seconds at 1× playback.`;
     $('chart-end').textContent=plan.duration_s+' s';
     const colors=['#6cd6c2','#80baff','#ffcd73','#df9eff','#ff8597'];
     plan.joint_plot_indices.forEach((j,k)=>{
@@ -83,16 +83,16 @@ async function main(){
       const key=document.createElement('span');key.textContent='J'+(j+1);key.style.color=colors[k];$('joint-legend').append(key);
     });
     for(const [id,t] of [['scan-start',plan.stages[2].start_s],['scan-return',plan.stages.at(-1).start_s]]){
-      $(id).disabled=false;$(id).onclick=()=>{playing=false;$('play').textContent='Putar simulasi';show(Math.round(t*plan.sampling_hz));};
+      $(id).disabled=false;$(id).onclick=()=>{playing=false;$('play').textContent='Play simulation';show(Math.round(t*plan.sampling_hz));};
     }
   }else $('curve').setAttribute('points',plan.samples.filter((s,i)=>i%10===0).map(s=>`${35+270*s.t_s/plan.duration_s},${70-50*(s.q_rad[5]-plan.q0_rad[5])/THREE.MathUtils.degToRad(5)}`).join(' '));
   $('time').max=plan.samples.length-1;$('time').disabled=false;$('play').disabled=false;
-  $('time').oninput=()=>{playing=false;$('play').textContent='Putar simulasi';show(Number($('time').value));};
-  $('play').onclick=()=>{playing=!playing;if(playing){if(index===plan.samples.length-1)show(0);started=performance.now()/1000-plan.samples[index].t_s/rate;}$('play').textContent=playing?'Jeda':'Putar simulasi';};
+  $('time').oninput=()=>{playing=false;$('play').textContent='Play simulation';show(Number($('time').value));};
+  $('play').onclick=()=>{playing=!playing;if(playing){if(index===plan.samples.length-1)show(0);started=performance.now()/1000-plan.samples[index].t_s/rate;}$('play').textContent=playing?'Pause':'Play simulation';};
   if($('playback-rate'))$('playback-rate').onchange=()=>{rate=Number($('playback-rate').value);started=performance.now()/1000-plan.samples[index].t_s/rate;};
   $('frustum').onchange=()=>{optical.visible=$('frustum').checked;};
   for(const id of ['whole','wrist','top']){$(id).disabled=false;$(id).onclick=()=>fit(id);}
   const resize=()=>{const w=$('viewport').clientWidth,h=$('viewport').clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();};new ResizeObserver(resize).observe($('viewport'));resize();show(0);fit('whole');
-  function tick(now){try{if(playing){const t=(now/1000-started)*rate;const i=Math.max(0,Math.min(Math.floor(t*plan.sampling_hz),plan.samples.length-1));if(i!==index)show(i);if(i===plan.samples.length-1){playing=false;$('play').textContent='Putar simulasi';}}controls.update();renderer.render(scene,camera);requestAnimationFrame(tick);}catch(e){$('error').hidden=false;$('error').textContent=e.message;playing=false;}}requestAnimationFrame(tick);
+  function tick(now){try{if(playing){const t=(now/1000-started)*rate;const i=Math.max(0,Math.min(Math.floor(t*plan.sampling_hz),plan.samples.length-1));if(i!==index)show(i);if(i===plan.samples.length-1){playing=false;$('play').textContent='Play simulation';}}controls.update();renderer.render(scene,camera);requestAnimationFrame(tick);}catch(e){$('error').hidden=false;$('error').textContent=e.message;playing=false;}}requestAnimationFrame(tick);
 }
-main().catch(e=>{$('error').hidden=false;$('error').textContent='Simulasi gagal: '+e.message;});
+main().catch(e=>{$('error').hidden=false;$('error').textContent='Simulation failed: '+e.message;});

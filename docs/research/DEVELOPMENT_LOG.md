@@ -1,51 +1,51 @@
 # om6_piper
 
-## Pintu masuk Piper
+## Piper entry points
 
-Lihat [panduan utama](docs/START_HERE.md) untuk GUI, wake-up, clear error,
-penjelasan state dan CAD. Jalankan `piper.cmd doctor` untuk cek offline atau
-`run_viewer.cmd` untuk membuka viewer yang sudah ada. Aplikasi/GUI (24 modul),
-aset wrist dan gateway kini berada di `piper_readonly/` dalam folder ini.
-SDK, environment, state dan arsip riset masih shared; [status migrasi](docs/MIGRATION.md)
-menjelaskan kompatibilitas dan batasan. Catatan eksperimen di bawah tetap
-dipertahankan, termasuk path historisnya.
+See the [main guide](docs/START_HERE.md) for the GUI, wake-up, error clearing,
+state explanations and CAD. Run `piper.cmd doctor` for offline checks or
+`run_viewer.cmd` to open the existing viewer. The application/GUI (24 modules),
+wrist assets and gateway are now in this folder's `piper_readonly/` directory.
+The SDK, environments, state and research archives remain shared; the
+[migration status](docs/MIGRATION.md) explains compatibility and limitations.
+The experiment notes below retain their historical paths.
 
-## Hasil uji fisik scan meja — 7 Oktober 2026, 18:57
+## Physical tabletop scan results — 7 October 2026, 18:57
 
-Operator telah menjalankan `table_scan_live_01_20261007_185721_940567`.
-Rekaman berlangsung 192.05 detik: 5.759 pasangan RGB-D dicatat, 5.758 frame
-dipetakan, satu frame diganti oleh antrean latest-only, tanpa error recorder/mapper.
-Laju admission 29.98 frame/detik; **bukan** jaminan deadline realtime 30 Hz.
-Worker p95 37.15 ms, maksimum 64.03 ms; 606 panggilan melampaui 33.33 ms.
-Waktu host receipt sampai worker selesai p95 40.18 ms, di luar latency sensor,
-USB, encoding/render async, jaringan dan layar.
+The operator ran `table_scan_live_01_20261007_185721_940567`.
+Recording lasted 192.05 seconds: 5,759 RGB-D pairs recorded, 5,758 frames mapped,
+and one frame replaced by the latest-only queue, with no recorder/mapper errors.
+Admission rate was 29.98 frames/second; **not** a 30 Hz realtime deadline guarantee.
+Worker p95 was 37.15 ms, maximum 64.03 ms; 606 calls exceeded 33.33 ms.
+Host receipt to worker completion p95 was 40.18 ms, excluding sensor/USB latency,
+asynchronous encoding/rendering, networking and display.
 
-RGB memperlihatkan permukaan meja saat sapuan; orientasi optik dari feedback +
-CAD menunduk sekitar 55–60 derajat. Data ini bukan pengukuran akurasi hand-eye.
-Audit/review offline tidak mengakses atau menggerakkan robot.
+RGB shows the tabletop during the sweep; the feedback + CAD optical orientation
+points down by approximately 55–60 degrees. These data do not measure hand-eye
+accuracy. Offline auditing/review did not access or move the robot.
 
-Review tersimpan di `output/table_scan_review_20261007_v1/` pada root workspace:
+Review files are in `output/table_scan_review_20261007_v1/` at the workspace root:
 
-- `rgb_contact_sheet.jpg`: ringkasan RGB sepanjang gerakan, termasuk return.
-- `reconstruction/live_audit.json`: timing asli saat live dan pemeriksaan joint.
-- `reconstruction/reconstruction.json`: replay tepat 5.758 frame yang diterima;
-  empat array final (node/edge recent/history) **identik** dengan hasil live.
-- `retention_diagnostic.json`: perbandingan geometri sebelum/setelah return.
-- `video_final/demo.mp4`: video 94 detik, 3x playback; RGB + depth + graph,
-  tiga sudut pandang, keterbatasan memori dan timing. Ini rekonstruksi admissions
-  asli, bukan screen recording viewer atau benchmark replay.
-- `video_final/verification.json`: validasi video, graph dan hash input asli.
+- `rgb_contact_sheet.jpg`: RGB overview throughout motion, including the return.
+- `reconstruction/live_audit.json`: original live timing and joint checks.
+- `reconstruction/reconstruction.json`: replay of exactly 5,758 admitted frames;
+  all four final arrays (recent/history nodes/edges) are **identical** to live output.
+- `retention_diagnostic.json`: geometry comparison before/after returning.
+- `video_final/demo.mp4`: 94-second video at 3x playback; RGB + depth + graph,
+  three viewpoints, memory limitations and timing. This reconstructs original
+  admissions; it is not a viewer screen recording or replay benchmark.
+- `video_final/verification.json`: video, graph and original input hash validation.
 
-Kelemahan terkonfirmasi: history mencapai 40k node pada 346/364 snapshot.
-Di ROI dekat bidang meja nominal (X 0.25–0.85 m, Y -0.45–0.45 m, Z ±0.05 m),
-jumlah node history turun dari 12.573 sebelum return ke 2.832 setelah return.
-Sekitar 30.8% posisi ROI sebelumnya memiliki tetangga final dalam jarak 20 mm.
-Ini diagnostik kedekatan geometris, **bukan** persentase area meja/ground truth
-atau skor deteksi perubahan. Buffer history saat ini bukan arsip peta global.
-Prioritas berikutnya: penyimpanan wilayah tak aktif yang tidak digusur hanya
-karena kamera berpindah pandang, disertai pengujian retensi dan latency yang sama.
+Confirmed limitation: history reached 40k nodes in 346/364 snapshots. In the ROI
+near the nominal table plane (X 0.25–0.85 m, Y -0.45–0.45 m, Z ±0.05 m), history
+nodes fell from 12,573 before return to 2,832 afterward. About 30.8% of earlier ROI
+positions had a final neighbor within 20 mm. This is a geometric proximity
+diagnostic, **not** tabletop/ground-truth area coverage or a change-detection score.
+The current history buffer is not a global map archive. The next priority is
+storage for inactive regions that are not evicted merely because the camera
+changes view, evaluated with the same retention and latency tests.
 
-Reproduksi review (folder output harus baru):
+Reproduce the review using a new output folder:
 
 ```powershell
 .\piper_readonly\.venv_mapping\Scripts\python.exe .\om6_piper\review_live_scan.py .\om6_piper\output\table_scan_live_01_20261007_185721_940567 --output .\output\review_baru\reconstruction
@@ -53,100 +53,100 @@ Reproduksi review (folder output harus baru):
 .\piper_readonly\.venv_mapping\Scripts\python.exe .\om6_piper\verify_live_scan_review.py .\output\review_baru --video-dir video_final
 ```
 
-## Scan meja + mapping online (7 Oktober 2026)
+## Tabletop scanning + online mapping (7 October 2026)
 
-Lintasan sebelumnya hampir horizontal pada bagian sapuan. Kandidat baru
-menundukkan sumbu optik nominal CAD 55–60 derajat, lalu menyapu dua baris.
-Kecepatan perintah quintic dibatasi 4 derajat/detik; durasi rencana 186 detik
-(waktu program sedikit lebih panjang karena startup/hold akhir).
+The earlier sweep trajectory was almost horizontal. The new candidate tilts the
+nominal CAD optical axis downward by 55–60 degrees, then sweeps two rows. Quintic
+command speed is limited to 4 degrees/second; planned duration is 186 seconds
+(the program runs slightly longer due to startup and the final hold).
 
-**Belum dijalankan secara fisik oleh agen.** Preview memakai posisi awal dari
-rekaman `piper_scan_vision_slow_v1`, bukan feedback robot saat ini. Meja diasumsikan
-Z=0 pada frame base; ubah `--table-z` jika ketinggiannya berbeda. Jangan menambahkan
-offset visual 20 mm pada tinggi meja fisik. FK menggunakan CAD nominal dan URDF
-fallback lama; kesesuaian firmware serta hand-eye belum diukur.
+**Not physically executed by the agent.** The preview starts from the
+`piper_scan_vision_slow_v1` recording, not current robot feedback. The table is
+assumed to be Z=0 in the base frame; change `--table-z` for a different height.
+Do not add the 20 mm visual offset to physical table height. FK uses nominal CAD
+and the old fallback URDF; firmware agreement and hand-eye calibration are unmeasured.
 
-Dari PowerShell di `C:\Users\teuku\OneDrive\Documents\ChatGPT\ICRA2027`:
+From PowerShell in `C:\Users\teuku\OneDrive\Documents\ChatGPT\ICRA2027`:
 
 ```powershell
-# Offline: tidak membuka USB/kamera atau mengirim perintah robot.
+# Offline: no USB/camera access or robot commands.
 .\piper_readonly\.venv_mapping\Scripts\python.exe .\om6_piper\table_scan.py --table-z 0 --output .\output\table_scan_baru
 .\piper_readonly\.venv_mapping\Scripts\python.exe .\om6_piper\preview_table_scan.py .\output\table_scan_baru\plan.json
 ```
 
-Preview siap: `output/table_scan_20261007_v1/preview.mp4` (6x simulasi),
-`plan.json`, dan `preview.jpg`. Garis abu-abu adalah proyeksi hull mesh; bukan
-hasil observasi kamera. Pemeriksaan mesh terhadap bidang meja **bukan** uji
-self-collision, kabel, payload, jari gripper, atau benda di meja. Tidak ada
-perubahan gripper. Kandidat menolak posisi awal berbeda >2 derajat dari preview
-dan menolak target di luar batas joint; tidak melakukan clamp otomatis.
+Preview available: `output/table_scan_20261007_v1/preview.mp4` (6x simulation),
+`plan.json`, and `preview.jpg`. Gray lines are projected mesh hulls, not camera
+observations. Checking the mesh against the table plane is **not** a check of
+self-collision, cables, payload, gripper fingers or objects on the table. The
+gripper is unchanged. The candidate rejects starting poses differing from the
+preview by >2 degrees and targets outside joint limits; it does not clamp them.
 
-### Uji fisik oleh operator setelah memeriksa preview dan ketinggian meja
+### Operator physical test after reviewing the preview and table height
 
-Hanya satu program boleh memakai CAN dan D405. Tutup program lain yang memiliki
-perangkat; jangan menjalankan reader CAN kedua. Pastikan sapuan, gripper dan kabel
-bebas, serta physical emergency stop tersedia. Perintah ini **dapat menggerakkan
-robot setelah konfirmasi ENTER**:
+Only one program may own CAN and D405. Close other device owners; do not run a
+second CAN reader. Ensure the sweep, gripper and cables are clear and the physical
+emergency stop is available. This command **can move the robot after ENTER confirmation**:
 
 ```powershell
 .\piper_readonly\.venv_mapping\Scripts\python.exe .\om6_piper\trajectory_test.py --table-plan .\output\table_scan_20261007_v1\plan.json --map-live --vision-output .\om6_piper\output\table_scan_live_01
 ```
 
-Buka `http://127.0.0.1:8770/` selama program berjalan. Untuk Tailscale, tambahkan
-`--map-host <IP-Tailscale-PC-yang-aktif>`, lalu buka alamat tersebut pada port 8770 dari peer yang
-diizinkan. Tidak ada tombol kontrol gerak pada server ini. Jangan membuka port
-ke Internet publik. Alamat bind diperiksa sebelum koneksi robot; IP yang tidak
-terpasang atau port yang sudah dipakai menghentikan startup, tanpa fallback diam-diam.
-Pada pemeriksaan 7 Oktober 2026, IP lama `100.93.232.22` tidak terpasang pada PC;
-gunakan localhost sampai koneksi Tailscale pulih.
+Open `http://127.0.0.1:8770/` while the program runs. For Tailscale, add
+`--map-host <active-PC-Tailscale-IP>`, then open that address on port 8770 from an
+authorized peer. This server has no motion-control buttons. Do not expose the port
+to the public Internet. The bind address is checked before the robot connects;
+an unavailable IP or occupied port stops startup without a silent fallback.
+On 7 October 2026, the old IP `100.93.232.22` was not assigned to this PC;
+use localhost until Tailscale connectivity is restored.
 
-Jika folder `--vision-output` sudah ada, recorder otomatis membuat folder saudara
-bersufiks tanggal/jam, misalnya `table_scan_live_01_20261007_190000_123456`.
-Nama aktual dicetak sebagai `New vision capture directory` dan `Vision recording`.
-Rekaman lama tidak dihapus, ditimpa, atau dilanjutkan. Error izin/path lain tetap
-menghentikan startup. Replay/preview offline tetap meminta folder output baru.
+If `--vision-output` already exists, the recorder creates a sibling folder with a
+date/time suffix, for example `table_scan_live_01_20261007_190000_123456`. The actual
+name is printed as `New vision capture directory` and `Vision recording`. Old
+recordings are not deleted, overwritten or resumed. Other permission/path errors
+still stop startup. Offline replay/preview continues to require a new output folder.
 
-`--map-live` otomatis mengaktifkan `--record-vision`. Kamera dan feedback joint
-berbagi koneksi yang sudah dimiliki `trajectory_test.py`. Startup menunggu satu
-frame berhasil dipetakan sebelum meminta enable. Jika posisi awal berubah >2
-derajat selama persiapan, enable tidak dikirim. Ctrl+C menghentikan loop perintah,
-**bukan konfirmasi motor disabled**; mekanisme stop fisik tetap diperlukan.
+`--map-live` automatically enables `--record-vision`. Camera and joint feedback
+share the connection already owned by `trajectory_test.py`. Startup waits for one
+successfully mapped frame before requesting enable. If the starting pose changes
+by >2 degrees during preparation, enable is not sent. Ctrl+C stops the command
+loop; **it does not confirm disabled motors**. A physical stopping mechanism is
+still required.
 
-### Apa yang dipetakan
+### What is mapped
 
-- C++ melakukan ekstraksi adjacency depth dan penyimpanan sel 1 cm, stride 8,
-  depth 0.07–1.5 m. Dua buffer masing-masing maksimum 40k node / 80k edge.
-- Buffer recent diperbarui untuk frame yang diterima dan berumur 0.5 detik.
-  History diambil maksimum 5 Hz, TTL 180 detik. History bisa menyimpan objek yang
-  telah berubah dan **bukan** peta obstacle terkini atau ledger lengkap paper.
-- Input dan tampilan memakai antrean latest-only terpisah. Frame tertinggal
-  diganti, tidak ditumpuk. Counter drop dan waktu pemrosesan dicatat.
-- Pose dari CAD + feedback setelah penerimaan RGB-D. Ketiga pasangan cache joint
-  harus teramati memperbarui timestamp; watchdog menolak cache yang berhenti.
-  Ini belum membuktikan umur data di kabel CAN atau sinkronisasi exposure.
-- Frame dengan waktu depth tidak cocok clock host, terlalu tua, nomor mundur,
-  atau pose tidak layak tidak diintegrasikan. RGB hanya konteks, bukan texture
-  registration. Viewer meredup dan menandai STALE saat data terlambat/terputus.
-- Mapping dalam frame base fisik (tanpa display lift 20 mm). Jangan memakai peta
-  diagnostik ini untuk collision avoidance atau kontrol robot.
+- C++ extracts depth adjacency and stores 1 cm cells, stride 8, depth 0.07–1.5 m.
+  Each of two buffers holds at most 40k nodes / 80k edges.
+- Recent updates on admitted frames and has a 0.5-second lifetime. History samples
+  at most 5 Hz with TTL 180 seconds. It can retain changed objects and is **not**
+  a current obstacle map or the paper's complete ledger.
+- Input and display use separate latest-only queues. Old frames are replaced,
+  not accumulated. Drop counters and processing times are recorded.
+- Poses use CAD + feedback after RGB-D receipt. All three joint-cache pairs must
+  show timestamp updates; a watchdog rejects stopped caches. This does not yet
+  establish CAN-wire data age or exposure synchronization.
+- Frames with depth times incompatible with the host clock, excessive age,
+  regressing numbers or unsuitable poses are not integrated. RGB is context, not
+  texture registration. The viewer dims and labels STALE for late/disconnected data.
+- Mapping uses the physical base frame without the 20 mm display lift. Do not use
+  this diagnostic map for collision avoidance or robot control.
 
-Rekaman: `rgbd.bag`, `rgb.mp4`, `frames.jsonl`, `metadata.json`, `motion_events.json`.
+Recordings: `rgbd.bag`, `rgb.mp4`, `frames.jsonl`, `metadata.json`, `motion_events.json`.
 Mapping: `live_map/updates.jsonl`, `result.json`, `final.npz`, `last_view.jpg`.
-Viewer berhenti saat capture ditutup; hasil offline tetap tersimpan.
+The viewer stops when capture closes; offline results remain saved.
 
-### Replay tanpa robot
+### Replay without a robot
 
 ```powershell
 .\piper_readonly\.venv_mapping\Scripts\python.exe .\om6_piper\replay_live_mapping.py --seconds 35 --output .\output\table_map_replay_baru
 ```
 
-Menggunakan BAG scan lama pada laju timestamp depth asli, RGB dari indeks log
-yang sesuai, dan pipeline mapper yang sama. `demo.mp4` adalah rekaman tampilan
-replay 5 fps. **Bukan rekaman scan meja baru**, bukan pengukuran latency sensor
-live; pose pada log lama belum memiliki watchdog cache baru. Kecepatan mapping,
-render, antrean, akuisisi kamera, dan FPS video adalah besaran yang berbeda.
+Uses the old scan BAG at original depth timestamp intervals, RGB from the matching
+log index and the same mapper pipeline. `demo.mp4` records the replay display at
+5 fps. **Not a new tabletop recording** or a live sensor latency measurement; the
+old pose logs lack the newer cache watchdog. Mapping speed, rendering, queueing,
+camera acquisition and video FPS are different quantities.
 
-Pengujian tanpa hardware:
+Tests without hardware:
 
 ```powershell
 .\piper_readonly\.venv_mapping\Scripts\python.exe -m unittest discover -s om6_piper -p "test_table_live_mapping.py" -v

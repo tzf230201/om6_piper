@@ -26,7 +26,7 @@ async function main(){
     const geometry=loader.parse(await get(v.url,'arrayBuffer'));
     const mesh=new THREE.Mesh(geometry,new THREE.MeshStandardMaterial({color:new THREE.Color(...v.color.slice(0,3)),metalness:.2,roughness:.55}));
     mesh.position.fromArray(v.origin.xyz);mesh.quaternion.copy(urdfQuaternion(v.origin.rpy));mesh.scale.fromArray(v.scale);tree.links[link.name].add(mesh);
-    $('stats').textContent=`Memuat ${++count} mesh…`;
+    $('stats').textContent=`Loading ${++count} mesh…`;
   })));
   robot.updateMatrixWorld(true);
   const matrix=new THREE.Matrix4().set(...data.camera_to_display.flat());
@@ -73,17 +73,17 @@ async function main(){
     points.geometry.dispose();points.geometry=new THREE.BufferGeometry().setAttribute('position',new THREE.BufferAttribute(p,3));
     lines.geometry.dispose();lines.geometry=new THREE.BufferGeometry().setAttribute('position',new THREE.BufferAttribute(p,3)).setIndex(new THREE.BufferAttribute(e,1));
     $('time').value=i;$('clock').textContent=f.elapsed_s.toFixed(2)+' / '+data.duration_s.toFixed(2)+' s';
-    $('stats').textContent=`Frame ${f.index+1}/300 · ${f.nodes.toLocaleString()} titik · ${f.edges.toLocaleString()} sambungan · ${count} mesh`;
-    $('rgb').src=f.rgb;$('rgb-note').textContent=`RGB sebagai konteks · selisih timestamp ${f.rgb_offset_ms.toFixed(1)} ms. Graph disimpan setiap 5 frame.`;
+    $('stats').textContent=`Frame ${f.index+1}/300 · ${f.nodes.toLocaleString()} points · ${f.edges.toLocaleString()} links · ${count} mesh`;
+    $('rgb').src=f.rgb;$('rgb-note').textContent=`RGB context · timestamp difference ${f.rgb_offset_ms.toFixed(1)} ms. Graph saved every 5 frames.`;
   }
   $('time').max=data.frames.length-1;$('time').disabled=false;$('play').disabled=false;
-  $('time').oninput=()=>{playing=false;$('play').textContent='Putar';show(Number($('time').value));};
-  $('play').onclick=()=>{playing=!playing;if(playing){if(index===data.frames.length-1)show(0);started=performance.now()/1000-data.frames[index].elapsed_s;}$('play').textContent=playing?'Jeda':'Putar';};
+  $('time').oninput=()=>{playing=false;$('play').textContent='Play';show(Number($('time').value));};
+  $('play').onclick=()=>{playing=!playing;if(playing){if(index===data.frames.length-1)show(0);started=performance.now()/1000-data.frames[index].elapsed_s;}$('play').textContent=playing?'Pause':'Play';};
   for(const [id,node] of [['robot',robot],['points',points],['edges',lines],['frustum',optical]])$(id).onchange=()=>{node.visible=$(id).checked&&!(id==='frustum'&&sensorView);};
   document.querySelectorAll('[data-view]').forEach(b=>{b.disabled=false;b.onclick=()=>view(b.dataset.view);});
-  $('capture').textContent=data.captured_at+' (rekaman)';
+  $('capture').textContent=data.captured_at+' (recording)';
   const resize=()=>{const w=$('viewport').clientWidth,h=$('viewport').clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();};
   new ResizeObserver(resize).observe($('viewport'));resize();show(data.frames.length-1);view('iso');
-  function tick(now){if(playing){const t=now/1000-started;let next=index;while(next+1<data.frames.length&&data.frames[next+1].elapsed_s<=t)next++;if(next!==index)show(next);if(t>=data.duration_s){playing=false;$('play').textContent='Putar';}}if(!sensorView)controls.update();renderer.render(scene,camera);requestAnimationFrame(tick);}requestAnimationFrame(tick);
+  function tick(now){if(playing){const t=now/1000-started;let next=index;while(next+1<data.frames.length&&data.frames[next+1].elapsed_s<=t)next++;if(next!==index)show(next);if(t>=data.duration_s){playing=false;$('play').textContent='Play';}}if(!sensorView)controls.update();renderer.render(scene,camera);requestAnimationFrame(tick);}requestAnimationFrame(tick);
 }
-main().catch(error=>{$('error').hidden=false;$('error').textContent='Preview gagal: '+error.message;$('stats').textContent='Gagal dimuat';});
+main().catch(error=>{$('error').hidden=false;$('error').textContent='Preview failed: '+error.message;$('stats').textContent='Failed to load';});

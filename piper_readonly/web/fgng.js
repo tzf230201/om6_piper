@@ -16,7 +16,7 @@ export function mappingSummary(data) {
   if(!s)return data.message??'';
   if(data.algorithm==='hybrid-voxel-fgng-v3') {
     const age=s.graph_age_frames===null?'warming':`cache ${s.graph_age_frames} frame`;
-    return `${data.message} · map ${s.geometry_voxels} voxel @ ${(s.geometry_voxel_m*1000).toFixed(1)} mm · view ${s.display_points} titik · graf ${data.nodes.length}/${data.edges.length} (${age}) · ${Math.round(s.pipeline_ms)} ms`;
+    return `${data.message} · map ${s.geometry_voxels} voxel @ ${(s.geometry_voxel_m*1000).toFixed(1)} mm · view ${s.display_points} points · graph ${data.nodes.length}/${data.edges.length} (${age}) · ${Math.round(s.pipeline_ms)} ms`;
   }
   return data.message+` · ${data.nodes.length} nodes · ${data.edges.length} edges`+(s.components!==undefined?` · ${s.represented_components}/${s.components} komponen · ${Math.round(s.pipeline_ms)} ms`:'');
 }

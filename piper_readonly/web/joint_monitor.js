@@ -80,7 +80,7 @@ export function createJointMonitor() {
     status.textContent=frozen?'FROZEN / HISTORICAL':displayed?.snapshot?'SNAPSHOT / OFFLINE':displayed?.live&&!displayed.error&&fresh?'LIVE TELEMETRY':'STALE / PARTIAL FEEDBACK';
     status.classList.toggle('live',!frozen&&!!displayed?.live&&!displayed.error&&fresh);
     $('monitor-view').classList.toggle('frozen',frozen);
-    $('monitor-time').textContent=displayed?.data?.captured_at?'Sampel '+new Date(displayed.data.captured_at).toLocaleTimeString('id-ID',{hour12:false})+(frozen?' · bukan kondisi saat ini':''):'Belum ada sampel';
+    $('monitor-time').textContent=displayed?.data?.captured_at?'Sample '+new Date(displayed.data.captured_at).toLocaleTimeString('en-US',{hour12:false})+(frozen?' · not current state':''):'No samples yet';
     $('monitor-export').disabled=!displayed?.data;
   }
   function selectTab(monitor){

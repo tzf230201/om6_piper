@@ -76,7 +76,7 @@ def make_handler(state, model, mesh_assets, port, fgng=None):
                 mime = 'application/json'
             elif path == '/api/fgng':
                 body = json.dumps(fgng.response() if fgng else {
-                    'status':'disabled','live':False,'message':'F-GNG tidak aktif',
+                    'status':'disabled','live':False,'message':'F-GNG disabled',
                     'nodes':[],'edges':[],'support':[]}, allow_nan=False).encode()
                 mime = 'application/json'
             elif path in assets and assets[path].is_file():

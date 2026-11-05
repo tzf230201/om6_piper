@@ -1,33 +1,33 @@
-# Piper: mulai dari sini
+# Piper: start here
 
-**Tahap aplikasi/GUI selesai.** Launcher, 24 modul aplikasi Piper, GUI, aset
-wrist, panduan dan salinan CAD ada di `ICRA2027/om6_piper`. Jalur aplikasi lama
-tetap bekerja melalui pengarah kompatibilitas. SDK, environment, state/interlock,
-model robot resmi dan arsip riset tetap di lokasi bersama. Folder ini belum
-portable jika disalin sendirian ke PC lain.
+**Application/GUI migration completed.** The launcher, 24 Piper application modules,
+GUI, wrist assets, guides and CAD copies are in `ICRA2027/om6_piper`. Legacy
+application paths still work through compatibility adapters. The SDK, environments,
+state/interlock, official robot model and research archives remain shared. Copying
+this folder alone to another PC does not provide a portable installation.
 
 ```text
 om6_piper/
-  piper.cmd / piper.py       satu pintu menjalankan program yang sudah ada
-  run_viewer.cmd            GUI mesh 3D + menu Monitor
-  src/                     trajectory, capture, mapping, replay dan eksperimen
-  tests/                   tes offline, terpisah dari contoh hardware
-  examples/manual/         skrip hardware historis; bukan unit test
-  trajectory_test.py       adapter kompatibilitas ke src/trajectory_test.py
-  piper_readonly/           source aplikasi, pembaca state, maintenance, gateway
-    web/                   viewer 3D, tabel Monitor, preview trajectory
-    assets/wrist_cad/       mesh dan konfigurasi mounting D405 aktif
-    app_paths.py           batas antara aplikasi lokal dan resource bersama
-  docs/                     operasi, state, mekanik, dan migrasi
-  cad/source/               STEP asli
-  cad/inventor/             salinan IAM dan empat IPT rujukannya + STL arm
-  cad/reference/            referensi D405 dan model optik vendor
-  output/                   rekaman robot yang memang sudah ada di sini
-  cad/copy_manifest.json     lokasi asal dan hash salinan CAD
-  .local/                  backup, audit migrasi dan laporan tes (diabaikan Git)
+  piper.cmd / piper.py       common entry point for existing programs
+  run_viewer.cmd            3D mesh GUI and Monitor menu
+  src/                      trajectories, capture, mapping, replay and experiments
+  tests/                    offline tests, separate from hardware examples
+  examples/manual/          historical hardware scripts; not unit tests
+  trajectory_test.py        compatibility adapter for src/trajectory_test.py
+  piper_readonly/            application source, state reader, maintenance, gateway
+    web/                    3D viewer, Monitor table, trajectory preview
+    assets/wrist_cad/        active D405 meshes and mounting configuration
+    app_paths.py            boundary between local application and shared resources
+  docs/                     operations, state, mechanics and migration
+  cad/source/               original STEP
+  cad/inventor/             IAM and four referenced IPT copies, plus arm STL
+  cad/reference/            D405 references and vendor optical model
+  output/                   existing robot recordings
+  cad/copy_manifest.json    original locations and CAD copy hashes
+  .local/                   backups, migration audits and test reports (Git ignored)
 ```
 
-## Cek instalasi tanpa mengakses robot
+## Check the installation without accessing the robot
 
 ```powershell
 cd "C:\Users\teuku\OneDrive\Documents\ChatGPT\ICRA2027\om6_piper"
@@ -35,58 +35,57 @@ cd "C:\Users\teuku\OneDrive\Documents\ChatGPT\ICRA2027\om6_piper"
 .\piper.cmd --help
 ```
 
-`doctor` memeriksa file, modul dan mencetak lokasi aktual. Ia tidak menyalakan motor,
-menghapus error, menghubungkan CAN, atau membuka kamera.
+`doctor` checks files and modules and prints their actual locations. It does not
+power motors, clear errors, connect to CAN or open the camera.
 
 ## Viewer
 
-Jalankan `run_viewer.cmd`, atau `piper.cmd gui --open`. Launcher meneruskan ke
-`piper_readonly/web_monitor.py` di dalam `om6_piper`, tanpa membuat salinan state kontrol.
-Ini membuka pembaca robot
-dan kamera sesuai perilaku viewer yang sudah ada. Untuk robot tanpa kamera,
-gunakan `piper.cmd gui --no-fgng --open`. URL lokal adalah
-`http://127.0.0.1:8765/`; menu **Monitor** berisi tabel J1--J6.
-Jangan menjalankan pembaca CAN/kamera kedua bersamaan dengan trajectory.
-Konfigurasi Tailscale lama dipertahankan, bukan dikonfigurasi ulang oleh migrasi.
+Run `run_viewer.cmd` or `piper.cmd gui --open`. The launcher forwards to
+`piper_readonly/web_monitor.py` inside `om6_piper`, without duplicating control state.
+This opens the robot reader and camera according to the existing viewer behavior.
+For monitoring without a camera, use `piper.cmd gui --no-fgng --open`. The local URL
+is `http://127.0.0.1:8765/`; the **Monitor** menu contains the J1--J6 table.
+Do not run a second CAN/camera reader alongside a trajectory session.
+The existing Tailscale configuration was preserved during migration.
 
-Untuk inspeksi offline (tidak membuka CAN atau kamera):
+For offline inspection without opening CAN or the camera:
 
 ```powershell
 .\piper.cmd gui --snapshot ..\output\motion_preflight_20261005_v1\robot_status.json --port 8768 --open
 ```
 
-Tampilan ini berlabel snapshot, **bukan kondisi robot saat ini**. Snapshot lama
-dapat berisi fault yang sudah tidak berlaku; jangan menyimpulkan readiness dari situ.
+This view is labeled as a snapshot, **not the current robot state**. Old snapshots
+may contain faults that no longer apply; they do not establish readiness.
 
-## Panduan lanjutan
+## Further guides
 
-- [Wake-up, clear error, disable dan gerak](ROBOT_OPERATIONS.md)
-- [Arti seluruh kelompok state yang kita baca](ROBOT_STATE.md)
-- [Mekanik, CAD dan transform kamera](MECHANICAL_CAD.md)
-- [Apa yang dipindahkan dan kompatibilitas path](MIGRATION.md)
-- [Catatan eksperimen dan mapping](research/README.md)
-- [Struktur repository dan dependency](REPOSITORY.md)
-- [Dokumentasi monitor terdahulu](../../piper_readonly/README.md)
+- [Wake-up, error clearing, disabling and motion](ROBOT_OPERATIONS.md)
+- [Meaning of all available state groups](ROBOT_STATE.md)
+- [Mechanics, CAD and camera transforms](MECHANICAL_CAD.md)
+- [Moved components and path compatibility](MIGRATION.md)
+- [Experiment and mapping notes](research/README.md)
+- [Repository structure and dependencies](REPOSITORY.md)
+- [Earlier monitor documentation](../../piper_readonly/README.md)
 
-Masih eksternal: `../piper_readonly` (SDK, environment, URDF/mesh resmi, state,
-mapping bersama, alat CAD historis dan log), `../cpp_surface`, `../fgng_realsense`,
-`../fgng_upstream`, `../research_20260930`, `../output`, dan `../tmp/video_tools`.
-Jalur `../piper_readonly/web` dan `assets` adalah junction ke aset aplikasi baru,
-bukan salinan aktif kedua. Jangan hapus direktori lama: masih menyimpan dependency.
-Argumen path relatif launcher dihitung dari `om6_piper`, bukan lokasi terminal.
-Interlock dan permit one-shot tetap di lokasi asal, tidak direset.
+External resources remain in `../piper_readonly` (SDK, environments, official
+URDF/meshes, state, shared mapping, historical CAD tools and logs), `../cpp_surface`,
+`../fgng_realsense`, `../fgng_upstream`, `../research_20260930`, `../output`, and
+`../tmp/video_tools`. The legacy `../piper_readonly/web` and `assets` paths are
+junctions to the new application assets, not a second active copy. Do not delete
+the legacy directory: it still holds dependencies. Relative launcher arguments
+are resolved from `om6_piper`, not the terminal directory. The interlock and
+one-shot permits remain at their original locations and were not reset.
 
-`piper.cmd` menggunakan `../piper_readonly/.venv`, karena environment tersebut
-memiliki `usb` dan `gs_usb` yang dibutuhkan aplikasi robot. `.venv_mapping`
-tetap tersedia untuk workflow riset lama tetapi tidak memiliki kedua modul itu.
-Tidak ada paket yang diinstal ulang dalam migrasi ini.
+`piper.cmd` uses `../piper_readonly/.venv` because it contains the `usb` and `gs_usb`
+modules required by the robot application. `.venv_mapping` remains available for
+older research workflows but lacks those modules. No packages were reinstalled.
 
-Untuk developer GUI: `cd piper_readonly`, lalu `npm test` atau `npm run build`.
-Dependency JavaScript tetap dibagi dari `../../piper_readonly/node_modules`.
-Pengujian lengkap migrasi, dari folder `om6_piper`:
+For GUI development: `cd piper_readonly`, then `npm test` or `npm run build`.
+JavaScript dependencies remain shared through `../../piper_readonly/node_modules`.
+Run the full migration test suite from `om6_piper`:
 
 ```powershell
 .\piper.cmd test
 ```
 
-Suite tersebut tidak membuka hardware.
+The suite does not open hardware.

@@ -50,12 +50,12 @@ function makeModelReadouts() {
   for(const link of model.links) {
     if(!link.visuals.length) continue;
     const button=document.createElement('button');button.textContent=(link.name==='base_link'?'◇ ':'↳ ')+link.name;
-    button.title='Pilih '+link.name;button.onclick=()=>selectLink(link.name);
+    button.title='Select '+link.name;button.onclick=()=>selectLink(link.name);
     $('link-tree').append(button);linkButtons.set(link.name,button);
   }
-  text('model-source', model.urdf+(model.firmware_match_known?' · sesuai firmware':' · firmware belum diketahui'));
+  text('model-source', model.urdf+(model.firmware_match_known?' · firmware matched':' · firmware unknown'));
   $('show-camera').disabled=!model.wrist_camera;
-  text('camera-note',model.wrist_camera?(model.wrist_camera.viewer_fit?.enabled?'Mount disesuaikan untuk viewer · bukan kalibrasi optik':(model.wrist_camera.bottom_mount_flip?.enabled?'Mount bawah 180° · bukan kalibrasi optik':'Pose dari assembly CAD · bukan kalibrasi optik')):'Tidak ada assembly kamera');
+  text('camera-note',model.wrist_camera?(model.wrist_camera.viewer_fit?.enabled?'Mount adjusted for viewer; not optical calibration':(model.wrist_camera.bottom_mount_flip?.enabled?'Lower mount rotated 180°; not optical calibration':'CAD assembly pose; not optical calibration')):'No camera assembly');
 }
 
 function selectLink(name) {
@@ -91,7 +91,7 @@ function setupScene() {
     const w=viewport.clientWidth,h=viewport.clientHeight;
     if(!w||!h)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
   });observer.observe(viewport);
-  renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();modelError='WebGL terputus. Muat ulang halaman untuk memulihkan viewer.';notice(modelError,true);});
+  renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();modelError='WebGL context lost. Reload the page to restore the viewer.';notice(modelError,true);});
   const ray=new THREE.Raycaster();let down=null;
   renderer.domElement.addEventListener('pointerdown',e=>{if(e.button===0)down=[e.clientX,e.clientY];});
   renderer.domElement.addEventListener('pointerup',e=>{
@@ -137,7 +137,7 @@ async function loadMeshes() {
           mesh.quaternion.copy(urdfQuaternion(visual.origin.rpy));mesh.scale.fromArray(visual.scale);
           mesh.userData.link=link.name;tree.links[link.name].add(mesh);meshes.push(mesh);meshCount++;
           text('mesh-status',`PIPER · ${meshCount}/${totalMeshes} MESH`);
-        } catch(e) {meshError='Mesh gagal dimuat: '+visual.url+' · '+e.message;}
+        } catch(e) {meshError='Mesh failed to load: '+visual.url+' · '+e.message;}
       })());
     }
   }
@@ -193,9 +193,9 @@ function updatePositions() {
 function refreshNotice() {
   if(modelError)return notice(modelError,true);
   if(meshError)return notice(meshError,true);
-  if(!modelReady)return notice(`Memuat model resmi Piper · ${meshCount}/${totalMeshes||'…'} mesh`);
-  if(packet?.snapshot)return notice('SNAPSHOT · data tersimpan, bukan kondisi live',true);
-  if(!packet?.live)return notice(hasPose?'FEEDBACK STALE · pose terakhir ditahan, bukan kondisi saat ini':'Menunggu feedback robot. Pose tidak diasumsikan nol.',true);
+  if(!modelReady)return notice(`Loading official Piper model · ${meshCount}/${totalMeshes||'…'} mesh`);
+  if(packet?.snapshot)return notice('SNAPSHOT · saved data, not live state',true);
+  if(!packet?.live)return notice(hasPose?'STALE FEEDBACK · last pose held, not current state':'Waiting for robot feedback. Pose is not assumed to be zero.',true);
   notice('');
 }
 
@@ -210,7 +210,7 @@ function updateTelemetry() {
   document.body.classList.toggle('stale',!connected);
   const s=d?.arm_status;
   text('controller',s?(stateNames[s.arm_status]??'Status '+s.arm_status):'Unknown');
-  text('control-mode',s?(modeNames[s.ctrl_mode]??'Mode '+s.ctrl_mode):'Tidak ada feedback terkini');
+  text('control-mode',s?(modeNames[s.ctrl_mode]??'Mode '+s.ctrl_mode):'No current feedback');
   text('error-code',s?hex(s.err_code):'—');
   text('firmware',d?.firmware?.software_version??'—');
   const drivers=d?.drivers??[],available=drivers.filter(v=>v!=null);
@@ -225,16 +225,16 @@ function updateTelemetry() {
     row.children[2].textContent=number(driver?.vol);row.children[3].textContent=hex(driver?.foc_status_code);
     const alert=!!(driver?.foc_status_code&0xBF);row.children[3].classList.toggle('flagged',alert);
     if(alert)flagged.push('J'+(i+1)+' '+hex(driver.foc_status_code));
-    row.title=driver?Object.entries(driver.foc_status||{}).filter(([,v])=>v).map(([k])=>k).join(', '):'Data tidak tersedia';
+    row.title=driver?Object.entries(driver.foc_status||{}).filter(([,v])=>v).map(([k])=>k).join(', '):'Data unavailable';
   });
-  text('driver-alert',flagged.length?flagged.join(' · ')+'. 0x30 = collision + driver error menurut SDK. Status controller ditampilkan terpisah; bukan diagnosis.':(available.length?'Tidak ada flag driver aktif pada data yang tersedia.':'Data driver tidak tersedia.'));
+  text('driver-alert',flagged.length?flagged.join(' · ')+'. 0x30 = collision + driver error according to the SDK. Controller status is shown separately; this is not a diagnosis.':(available.length?'No active driver flags in the available data.':'Driver data unavailable.'));
   $('driver-alert').classList.toggle('warning',!!flagged.length);
   jointCards.forEach(({card,value,bar,enable,joint},i)=>{
     const q=d?.joint_angles_rad?.[i],lo=joint.limit.lower,hi=joint.limit.upper;
     value.textContent=number(Number.isFinite(q)?q*180/Math.PI:NaN,2)+(Number.isFinite(q)?'°':'');
     bar.style.width=Number.isFinite(q)?Math.min(100,Math.max(0,(q-lo)/(hi-lo)*100))+'%':'0%';
     const outside=Number.isFinite(q)&&(q<lo||q>hi);card.classList.toggle('outside',outside);
-    card.title=outside?'Feedback berada di luar batas nominal URDF; pose tidak di-clamp.':'Posisi di rentang URDF';
+    card.title=outside?'Feedback is outside nominal URDF limits; the pose is not clamped.':'Position within URDF range';
     const on=drivers[i]?.foc_status?.driver_enable_status;
     enable.textContent=on===undefined?'ENABLE —':on?'ENABLE ON':'ENABLE OFF';
   });
@@ -243,9 +243,9 @@ function updateTelemetry() {
     if(lastRate&&now-lastRate.time>1000){rate=Math.max(0,(d.rx_frame_count-lastRate.count)*1000/(now-lastRate.time));lastRate={time:now,count:d.rx_frame_count};}
     else if(!lastRate)lastRate={time:now,count:d.rx_frame_count};
     text('rx-rate',`RX ${number(rate,0)} frames/s`);
-    text('sample-time',new Date(d.captured_at).toLocaleTimeString('id-ID',{hour12:false})+(connected?' · feedback < 0,5 s':' · snapshot'));
-    text('tx-info',`Motor TX diblokir · Query FW ${d.firmware_queries_sent??'—'} · Ditolak ${d.blocked_commands??'—'}`);
-  } else {text('rx-rate','RX —');text('sample-time',packet?.error||'Tidak ada sampel baru');}
+    text('sample-time',new Date(d.captured_at).toLocaleTimeString('en-US',{hour12:false})+(connected?' · feedback < 0.5 s':' · snapshot'));
+    text('tx-info',`Motor TX blocked · Query FW ${d.firmware_queries_sent??'—'} · Rejected ${d.blocked_commands??'—'}`);
+  } else {text('rx-rate','RX —');text('sample-time',packet?.error||'No new samples');}
   $('snapshot').disabled=!packet?.data;
   applyPacket();refreshNotice();
 }
@@ -255,7 +255,7 @@ async function poll() {
     const response=await fetch('/api/state',{cache:'no-store',signal:AbortSignal.timeout(2000)});
     if(!response.ok)throw Error('HTTP '+response.status);
     packet=await response.json();lastReceipt=performance.now();
-  } catch(e) {packet={...packet,live:false,snapshot:false,error:'Monitor tidak terhubung · '+e.message};}
+  } catch(e) {packet={...packet,live:false,snapshot:false,error:'Monitor disconnected · '+e.message};}
   updateTelemetry();setTimeout(poll,100);
 }
 
@@ -270,9 +270,9 @@ function bindControls() {
   $('fit').onclick=()=>fitRobot('current');$('reset').onclick=()=>fitRobot('iso');
   $('fit-map').onclick=()=>fitRobot('current',true);
   document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>fitRobot(b.dataset.view));
-  $('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await viewport.requestFullscreen();}catch{notice('Layar penuh tidak tersedia di browser ini.',true);}};
+  $('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await viewport.requestFullscreen();}catch{notice('Fullscreen is unavailable in this browser.',true);}};
   viewport.onkeydown=e=>{if(e.key.toLowerCase()==='f'){e.preventDefault();fitRobot('current');}if(e.key.toLowerCase()==='r'){e.preventDefault();fitRobot('iso');}};
-  $('theme').onclick=()=>{const light=document.body.classList.toggle('light');text('theme',light?'Tema gelap':'Tema terang');try{localStorage.setItem('piper-theme',light?'light':'dark');}catch{}};
+  $('theme').onclick=()=>{const light=document.body.classList.toggle('light');text('theme',light?'Dark theme':'Light theme');try{localStorage.setItem('piper-theme',light?'light':'dark');}catch{}};
   try{if(localStorage.getItem('piper-theme')==='light')$('theme').click();}catch{}
   $('snapshot').onclick=()=>{
     if(!packet?.data)return;
@@ -286,8 +286,8 @@ async function boot() {
   makeReadouts();bindControls();poll();
   try {
     const response=await fetch('/api/model',{signal:AbortSignal.timeout(5000)});
-    if(!response.ok)throw Error('Deskripsi model HTTP '+response.status);
+    if(!response.ok)throw Error('Model description HTTP '+response.status);
     model=await response.json();makeModelReadouts();setupScene();await loadMeshes();
-  } catch(e) {modelError='Viewer 3D gagal: '+e.message;notice(modelError,true);console.error(e);}
+  } catch(e) {modelError='3D viewer failed: '+e.message;notice(modelError,true);console.error(e);}
 }
 boot();
